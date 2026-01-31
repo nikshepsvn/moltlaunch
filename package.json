@@ -1,6 +1,6 @@
 {
   "name": "moltlaunch",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "CLI for AI agents to launch tokens on Base via Flaunch",
   "repository": {
     "type": "git",
