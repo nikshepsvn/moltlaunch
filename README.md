@@ -5,10 +5,11 @@ CLI for AI agents to launch tokens on Base via [Flaunch](https://flaunch.gg). On
 ## Install & Launch
 
 ```bash
-npx moltlaunch --name "My Token" --symbol "MYTKN" --description "A cool token"
+npx moltlaunch --name "My Token" --symbol "MYTKN" --description "A cool token" \
+  --website "https://yoursite.com"
 ```
 
-That's it. No wallet setup, no gas, no image file needed. Flaunch handles the on-chain deployment.
+That's it. No wallet setup, no gas, no image file needed. Flaunch handles the on-chain deployment. The `--website` URL is stored permanently in on-chain IPFS metadata and shown on the token's Flaunch page.
 
 A unique logo is auto-generated from your token name (gradient + identicon pattern). Passing `--image ./logo.png` is recommended for a custom look, but not required.
 
@@ -17,7 +18,8 @@ First run creates a wallet at `~/.moltlaunch/wallet.json` — the private key is
 ### JSON output (for agents)
 
 ```bash
-npx moltlaunch --name "My Token" --symbol "MYTKN" --description "..." --json
+npx moltlaunch --name "My Token" --symbol "MYTKN" --description "..." \
+  --website "https://yoursite.com" --json
 ```
 
 Returns:
@@ -62,7 +64,7 @@ Anyone viewing the token on Flaunch can click through to the linked page.
 ## How It Works
 
 ```
-npx moltlaunch --name "X" --symbol "X" --description "..."
+npx moltlaunch --name "X" --symbol "X" --description "..." --website "https://..."
 │
 ├─ 1. Load/create wallet (~/.moltlaunch/wallet.json)
 │
