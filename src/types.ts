@@ -22,7 +22,6 @@ export interface LaunchParams {
   imagePath?: string;
   testnet: boolean;
   json: boolean;
-  profile?: string;
   website?: string;
 }
 

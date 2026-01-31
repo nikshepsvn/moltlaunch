@@ -101,7 +101,6 @@ export async function launchMemecoin(params: {
   imageIpfs: string;
   creatorAddress: string;
   revenueManagerAddress?: string;
-  twitterUrl?: string;
   websiteUrl?: string;
   network: Network;
 }): Promise<string> {
@@ -114,7 +113,6 @@ export async function launchMemecoin(params: {
     imageIpfs: params.imageIpfs,
     creatorAddress: params.creatorAddress,
     revenueManagerAddress: params.revenueManagerAddress,
-    twitterUrl: params.twitterUrl,
     websiteUrl: params.websiteUrl,
   };
 

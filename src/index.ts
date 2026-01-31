@@ -24,8 +24,7 @@ program
   .requiredOption("--symbol <symbol>", "Token symbol")
   .requiredOption("--description <desc>", "Token description")
   .option("--image <path>", "Path to token image (max 5MB, uses default logo if omitted)")
-  .option("--profile <name>", "Moltbook profile name (shown as creator on Flaunch)")
-  .option("--website <url>", "Website URL for the token (community, post, etc.)")
+  .option("--website <url>", "Website URL (overrides auto-created Moltbook post)")
   .option("--testnet", "Use Base Sepolia testnet", false)
   .option("--json", "Output as JSON (for agents)", false)
   .action((opts) =>
@@ -34,7 +33,6 @@ program
       symbol: opts.symbol,
       description: opts.description,
       imagePath: opts.image ?? undefined,
-      profile: opts.profile,
       website: opts.website,
       testnet: opts.testnet,
       json: opts.json,
