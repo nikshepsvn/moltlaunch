@@ -4,7 +4,7 @@ export const REVENUE_MANAGER_ADDRESS = "0x3Bc08524d9DaaDEC9d1Af87818d809611F0fD6
 export const POSITION_MANAGER_ADDRESS = "0x51Bba15255406Cfe7099a42183302640ba7dAFDC";
 
 export const FLAUNCH_API_BASE = "https://web2-api.flaunch.gg";
-export const FLAUNCH_DATA_API_BASE = "https://dev-api.flayerlabs.xyz";
+export const FLAUNCH_DATA_API_BASE = "https://api.flayerlabs.xyz";
 
 export const CHAIN = {
   mainnet: {

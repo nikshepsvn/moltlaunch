@@ -87,7 +87,7 @@ export async function status(opts: StatusOpts): Promise<void> {
       console.log(`  ${token.name} (${token.symbol})${fairLaunch}`);
       console.log(`    Token:      ${token.tokenAddress}`);
       console.log(`    Market cap: ${mcap}`);
-      console.log(`    Flaunch:    ${chain.flaunchUrl}/token/${token.tokenAddress}`);
+      console.log(`    Trade:      ${chain.flaunchUrl}/token/${token.tokenAddress}`);
       console.log(`    Launched:   ${date}`);
       console.log();
     }

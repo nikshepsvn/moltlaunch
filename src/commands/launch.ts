@@ -50,7 +50,7 @@ export async function launch(opts: LaunchParams): Promise<void> {
     const imageIpfs = await uploadImage(imageSource);
     if (!json) console.log(` ${imageIpfs.slice(0, 16)}...`);
 
-    // Step 3: Launch via Flaunch Web2 API (gasless — Flaunch handles on-chain tx)
+    // Step 3: Submit gasless launch (on-chain tx handled server-side)
     if (!json) process.stdout.write("Submitting launch...");
 
     const jobId = await launchMemecoin({

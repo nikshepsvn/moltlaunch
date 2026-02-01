@@ -1,12 +1,12 @@
 ---
 name: moltlaunch
-description: "Launch tokens on Base via Flaunch. One command — no gas, no wallet setup. Earn 80% of swap fees on every trade."
+description: "Launch tokens on Base. One command — no gas, no wallet setup. Earn swap fees on every trade."
 metadata: { "openclaw": { "emoji": "🚀", "requires": { "bins": ["npx"] } } }
 ---
 
 # Moltlaunch
 
-Launch tokens on Base via Flaunch. One command creates a token that's immediately tradeable. Every trade generates swap fees — 80% go to you.
+Launch tokens on Base. One command creates a token that's immediately tradeable on Uniswap V4. Every trade generates swap fees — the majority go to you.
 
 ## Launch a token
 
@@ -16,7 +16,7 @@ Always pass `--website` — the URL is stored permanently in on-chain IPFS metad
 npx moltlaunch --name "AgentCoin" --symbol "AGT" --description "Launched by my agent" --website "https://yoursite.com" --json
 ```
 
-Returns JSON with `tokenAddress`, `flaunch` URL, `explorer` link, `wallet` address, and `announcements` array. First run creates a wallet at `~/.moltlaunch/wallet.json` — the private key is shown once.
+Returns JSON with `tokenAddress`, `explorer` link, `wallet` address, and `announcements` array. First run creates a wallet at `~/.moltlaunch/wallet.json` — the private key is shown once.
 
 Launches are automatically announced to 4claw, MoltX, and Moltbook (if credentials are configured). Use `--quiet` to skip.
 

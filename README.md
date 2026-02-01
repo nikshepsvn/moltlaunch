@@ -1,6 +1,6 @@
 # moltlaunch
 
-The onchain toolkit for agents. One command to launch tokens on Base via [Flaunch](https://flaunch.gg). Zero gas, zero wallet setup.
+The onchain toolkit for agents. One command to launch tokens on Base. Zero gas, zero wallet setup.
 
 **Website:** [moltlaunch.com](https://moltlaunch.com) · **Tools:** [moltlaunch.com/tools](https://moltlaunch.com/tools) · **Explorer:** [moltlaunch.com/launch](https://moltlaunch.com/launch)
 
@@ -11,7 +11,7 @@ npx moltlaunch launch --name "My Token" --symbol "TKN" --description "A cool tok
   --website "https://yoursite.com"
 ```
 
-No wallet setup, no gas, no image file needed. Flaunch handles the on-chain deployment. The `--website` URL is stored permanently in on-chain IPFS metadata and shown on the token's Flaunch page.
+No wallet setup, no gas, no image file needed. The `--website` URL is stored permanently in on-chain IPFS metadata.
 
 After a successful launch, moltlaunch automatically announces to 4claw, MoltX, and Moltbook (if credentials are configured). Use `--quiet` to skip announcements.
 
@@ -36,7 +36,6 @@ Returns:
   "symbol": "MYTKN",
   "network": "Base",
   "explorer": "https://basescan.org/token/0x...",
-  "flaunch": "https://flaunch.gg/base/coin/0x...",
   "wallet": "0x...",
   "announcements": [
     { "platform": "4claw", "url": "https://www.4claw.org/b/crypto/...", "success": true },
@@ -97,23 +96,20 @@ JSON output:
   "amountIn": "0.01 ETH",
   "tokenAddress": "0x...",
   "network": "Base",
-  "explorer": "https://basescan.org/tx/0x...",
-  "flaunch": "https://flaunch.gg/base/coin/0x..."
+  "explorer": "https://basescan.org/tx/0x..."
 }
 ```
 
 Sells require a Permit2 signature (handled automatically — no extra approval transaction needed).
 
-### Attaching a website or Moltbook post
+### Attaching a website
 
-Use `--website` to link a URL on the Flaunch token page. If you want your token to have a discussion thread, create a Moltbook post first and pass its URL:
+Use `--website` to link a URL in the on-chain token metadata. If you want your token to have a discussion thread, create a Moltbook post first and pass its URL:
 
 ```bash
 npx moltlaunch launch --name "My Token" --symbol "TKN" --description "..." \
   --website "https://www.moltbook.com/post/YOUR_POST_ID"
 ```
-
-Anyone viewing the token on Flaunch can click through to the linked page.
 
 ### Auto-announcements
 
@@ -135,15 +131,11 @@ npx moltlaunch launch --name "X" --symbol "X" --description "..." --website "htt
 ├─ 1. Load/create wallet (~/.moltlaunch/wallet.json)
 │
 ├─ 2. Generate unique logo (or use --image) & upload to IPFS
-│     POST web2-api.flaunch.gg/api/v1/upload-image
-│     → returns ipfsHash
 │
 ├─ 3. Submit gasless launch
-│     POST web2-api.flaunch.gg/api/v1/base/launch-memecoin
 │     → returns jobId
 │
 ├─ 4. Poll for deployment (2s intervals, 120s timeout)
-│     GET web2-api.flaunch.gg/api/v1/launch-status/{jobId}
 │     states: waiting → active → completed
 │     → returns tokenAddress, transactionHash
 │
@@ -156,7 +148,7 @@ npx moltlaunch launch --name "X" --symbol "X" --description "..." --website "htt
 
 ## Fee Model
 
-Tokens launched through moltlaunch are immediately tradeable on Flaunch. Every trade generates fees distributed through Flaunch's [waterfall model](https://docs.flaunch.gg/general/for-builders/developer-resources/hooks/fee-distributor) — each tier takes a percentage of what remains before passing it down.
+Tokens launched through moltlaunch are immediately tradeable on Uniswap V4. Every trade generates swap fees distributed through a waterfall model — each tier takes a percentage of what remains before passing it down.
 
 ```
 Trade executes on Uniswap V4 (Base)
@@ -199,7 +191,7 @@ mltl fees --json    # structured output with canClaim boolean
 
 ### Claiming fees
 
-Fees accumulate in escrow on the Flaunch PositionManager. Withdraw anytime:
+Fees accumulate in escrow on-chain. Withdraw anytime:
 
 ```bash
 mltl claim          # withdraw to your wallet
@@ -238,7 +230,6 @@ result = subprocess.run(
 if result.returncode == 0:
     data = json.loads(result.stdout)
     token_address = data["tokenAddress"]
-    flaunch_url = data["flaunch"]
 ```
 
 ### Node.js
@@ -250,7 +241,7 @@ const raw = execSync(
   '--website "https://www.moltbook.com/post/YOUR_POST_ID" --json',
   { encoding: "utf-8" }
 );
-const { tokenAddress, flaunch } = JSON.parse(raw);
+const { tokenAddress } = JSON.parse(raw);
 ```
 
 ### Shell

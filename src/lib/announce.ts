@@ -72,7 +72,7 @@ function buildAnnouncementContent(record: LaunchRecord): { title: string; conten
   const explorerUrl = `https://basescan.org/token/${record.tokenAddress}`;
 
   const lines = [
-    `${record.name} (${record.symbol}) just launched on Base via Flaunch.`,
+    `${record.name} (${record.symbol}) just launched on Base.`,
     "",
     `Trade: ${record.flaunchUrl}`,
     `Explorer: ${explorerUrl}`,
