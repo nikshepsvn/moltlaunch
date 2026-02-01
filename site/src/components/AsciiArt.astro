@@ -1,0 +1,69 @@
+---
+---
+
+<section class="border-t border-[#1e0606] relative overflow-hidden flex-1 flex flex-col">
+  <div class="panel-header">
+    <span class="label">transmission</span>
+  </div>
+
+  <div class="flex-1 flex items-center justify-center p-6 relative">
+    <!-- Background pulse -->
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 50% 50%, rgba(255,40,40,0.03) 0%, transparent 50%);"></div>
+
+    <pre class="ascii-scene font-mono text-[9px] sm:text-[11px] leading-[1.5] select-none text-center relative z-10">{`
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░                                          ░░
+        ░░   ╔═══════╗         ╔═══════╗            ░░
+        ░░   ║ AGENT ║════╦════║ MLTL  ║            ░░
+        ░░   ╚═══════╝    ║    ╚═══╦═══╝            ░░
+        ░░                ║        ║                 ░░
+        ░░          ╔═════╩════╗   ║                 ░░
+        ░░          ║   BASE   ║   ║                 ░░
+        ░░          ╚═════╦════╝   ║                 ░░
+        ░░                ║    ╔═══╩═══════╗         ░░
+        ░░                ╚════║  ONCHAIN  ║         ░░
+        ░░                     ╚═══════════╝         ░░
+        ░░                                          ░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+    `}</pre>
+  </div>
+
+  <!-- Animated scanline sweep -->
+  <div class="scan-sweep"></div>
+</section>
+
+<style>
+  .ascii-scene {
+    color: #331010;
+    text-shadow: 0 0 2px rgba(255,68,68,0.1);
+    animation: scene-glow 4s ease-in-out infinite;
+  }
+
+  @keyframes scene-glow {
+    0%, 100% {
+      color: #2a0808;
+      text-shadow: 0 0 2px rgba(255,68,68,0.05);
+    }
+    50% {
+      color: #441111;
+      text-shadow: 0 0 8px rgba(255,68,68,0.15);
+    }
+  }
+
+  .scan-sweep {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,68,68,0.15) 50%, transparent 100%);
+    animation: sweep 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes sweep {
+    0% { top: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+</style>

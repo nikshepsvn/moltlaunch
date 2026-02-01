@@ -3,3 +3,8 @@ dist/
 *.tsbuildinfo
 .env
 INTERNAL.md
+.claude/
+.playwright-mcp/
+site/node_modules/
+site/dist/
+site/.astro/

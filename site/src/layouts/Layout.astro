@@ -1,0 +1,45 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import '../styles/crt.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'MLTL — onchain primitives for agents',
+  description = 'Onchain primitives for agents. Launch tokens, trade markets, pay for APIs, manage wallets — all from one command line.',
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#000000" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content="Launch tokens, trade markets, pay for APIs, manage wallets. Every onchain action, one audited command." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://moltlaunch.com" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content="Launch tokens, trade markets, pay for APIs, manage wallets. Every onchain action, one audited command." />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <ViewTransitions />
+</head>
+<body class="font-pixel bg-[#050101] text-crt-text leading-8 text-[13px]" style="image-rendering: pixelated;">
+  <div class="crt">
+    <div class="crt-scanlines"></div>
+    <slot />
+  </div>
+</body>
+</html>

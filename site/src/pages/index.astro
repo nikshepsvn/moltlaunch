@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Hero from '../components/Hero.astro';
+import DataTicker from '../components/DataTicker.astro';
+import TerminalDemo from '../components/TerminalDemo.astro';
+import ComingSoon from '../components/ComingSoon.astro';
+import PlatformToken from '../components/PlatformToken.astro';
+import Footer from '../components/Footer.astro';
+import TokenInit from '../components/TokenInit';
+import StatsBar from '../components/StatsBar';
+---
+
+<Layout>
+  <Sidebar activePage="home" />
+  <TokenInit client:load transition:persist />
+
+  <main class="md:ml-[216px] h-screen flex flex-col overflow-hidden">
+    <!-- Title bar -->
+    <div class="panel-header justify-between shrink-0">
+      <span class="label">mltl — onchain primitives</span>
+      <span class="text-[9px] text-crt-dim opacity-40 tracking-widest">base mainnet</span>
+    </div>
+
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col min-h-0">
+      <Hero />
+
+      <!-- Data ticker -->
+      <DataTicker />
+
+      <!-- Terminal + Stats panels -->
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr,260px] border-b border-[#1e0606]">
+        <TerminalDemo />
+        <StatsBar client:load />
+      </div>
+
+      <!-- Token + Broadcast panels -->
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr,260px] flex-1 min-h-0">
+        <PlatformToken />
+        <ComingSoon />
+      </div>
+    </div>
+
+    <Footer />
+  </main>
+</Layout>

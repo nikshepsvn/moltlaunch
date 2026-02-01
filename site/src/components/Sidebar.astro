@@ -1,0 +1,136 @@
+---
+interface Props {
+  activePage?: 'home' | 'tools' | 'docs' | 'launch';
+}
+
+const { activePage = 'home' } = Astro.props;
+
+const navLinks = [
+  { href: '/', key: 'home' as const, label: 'home', desc: 'overview' },
+  { href: '/tools', key: 'tools' as const, label: 'tools', desc: '6 commands' },
+  { href: '/docs', key: 'docs' as const, label: 'docs', desc: 'reference' },
+  { href: '/launch', key: 'launch' as const, label: 'launch', desc: 'explorer' },
+];
+
+const externalLinks = [
+  { href: 'https://www.npmjs.com/package/moltlaunch', label: 'npm' },
+  { href: 'https://github.com/nikshepsvn/moltlaunch', label: 'github' },
+  { href: 'https://app.uniswap.org/explore/tokens/base', label: 'uniswap' },
+];
+---
+
+<!-- Mobile top bar -->
+<div class="sidebar-mobile flex items-center gap-3 px-4 py-1.5 border-b border-[#1e0606] bg-[linear-gradient(180deg,#0c0303,#080202)] md:hidden">
+  <a href="/" class="font-mono text-crt-accent-glow text-[10px] tracking-[0.1em]" style="text-shadow: 0 0 8px rgba(255,68,68,0.4);">moltlaunch</a>
+  <div class="flex-1"></div>
+  {navLinks.map((link) => (
+    <a href={link.href} class:list={["text-[10px] font-mono transition-colors", activePage === link.key ? 'text-crt-accent-glow' : 'text-crt-dim hover:text-crt-accent-glow']}>{link.label}</a>
+  ))}
+</div>
+
+<!-- Desktop sidebar -->
+<aside class="sidebar hidden md:flex fixed left-0 top-0 bottom-0 w-[216px] flex-col border-r border-[#1e0606] z-50">
+
+  <!-- Brand -->
+  <a href="/" class="brand-header block px-4 py-5 border-b border-[#1e0606] no-underline relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 20% 30%, rgba(255,68,68,0.04) 0%, transparent 70%);"></div>
+    <pre class="brand-ascii font-mono text-[8px] leading-[1.15] select-none relative z-10">
+{`┏┳┓┓ ╺┳╸┓
+┃┃┃┃  ┃ ┃
+╹ ╹┗━╸╹ ┗━╸`}
+    </pre>
+    <div class="flex items-center justify-between mt-2 relative z-10">
+      <span class="font-mono text-[9px] text-crt-dim opacity-30 tracking-[0.15em]">moltlaunch</span>
+      <div class="flex items-center gap-1.5">
+        <span class="status-dot inline-block w-[4px] h-[4px] rounded-full bg-crt-green" style="box-shadow: 0 0 5px rgba(52,211,153,0.6);"></span>
+        <span class="font-mono text-[8px] text-crt-green opacity-60" style="text-shadow: 0 0 6px rgba(52,211,153,0.3);">live</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- Nav -->
+  <nav class="flex-1 flex flex-col font-mono relative z-10">
+    <span class="px-4 pt-4 pb-1.5 text-[8px] text-crt-dim uppercase tracking-[0.25em] opacity-25">navigate</span>
+
+    {navLinks.map((link) => (
+      <a href={link.href} class:list={[
+        "sidebar-link group px-4 py-[7px] transition-all flex items-center justify-between",
+        activePage === link.key ? 'active' : 'text-crt-dim hover:text-crt-accent-glow'
+      ]}>
+        <div class="flex items-center gap-2">
+          <span class="prompt-char text-[10px]">›</span>
+          <span class="text-[11px]">{link.label}</span>
+        </div>
+        <span class:list={[
+          "text-[8px] tracking-widest uppercase transition-opacity",
+          activePage === link.key ? 'text-crt-accent opacity-40' : 'text-crt-dim opacity-0 group-hover:opacity-30'
+        ]}>{link.desc}</span>
+      </a>
+    ))}
+
+    <!-- Separator -->
+    <div class="mx-4 my-3 h-px bg-[#1e0606]"></div>
+
+    <span class="px-4 pb-1.5 text-[8px] text-crt-dim uppercase tracking-[0.25em] opacity-25">links</span>
+
+    {externalLinks.map((link) => (
+      <a href={link.href} target="_blank" rel="noopener" class="sidebar-link px-4 py-[5px] text-[10px] text-crt-dim hover:text-crt-accent-glow transition-all flex items-center justify-between group">
+        <div class="flex items-center gap-2">
+          <span class="text-[#1e0606] group-hover:text-[#331010] transition-colors">·</span>
+          <span>{link.label}</span>
+        </div>
+        <span class="text-[8px] text-crt-dim opacity-0 group-hover:opacity-40 transition-opacity">↗</span>
+      </a>
+    ))}
+  </nav>
+
+  <!-- Bottom -->
+  <div class="border-t border-[#1e0606] px-4 py-3">
+    <div class="flex items-center justify-between font-mono text-[8px]">
+      <span class="text-crt-dim opacity-20 tracking-[0.2em]">base l2</span>
+      <span class="text-crt-dim opacity-20">8453</span>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    background: linear-gradient(180deg, #0a0202 0%, #060101 50%, #080202 100%);
+  }
+
+  .brand-ascii {
+    color: #ff4444;
+    text-shadow: 0 0 8px rgba(255,68,68,0.4), 0 0 20px rgba(255,50,50,0.1);
+  }
+
+  .brand-header:hover .brand-ascii {
+    text-shadow: 0 0 12px rgba(255,68,68,0.6), 0 0 30px rgba(255,50,50,0.2);
+  }
+
+  .prompt-char {
+    color: #1e0606;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .sidebar-link:hover .prompt-char {
+    color: #ff4444;
+    transform: translateX(2px);
+  }
+
+  .sidebar-link.active {
+    color: #ff4444;
+    text-shadow: 0 0 8px rgba(255,68,68,0.5);
+    background: linear-gradient(90deg, rgba(255,68,68,0.08) 0%, transparent 100%);
+    box-shadow: inset 2px 0 0 #ff4444;
+  }
+
+  .sidebar-link.active .prompt-char {
+    color: #ff4444;
+    transform: translateX(2px);
+  }
+
+  .sidebar-link:hover {
+    background: linear-gradient(90deg, rgba(255,68,68,0.03) 0%, transparent 100%);
+  }
+
+</style>

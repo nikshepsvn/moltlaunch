@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1500px;
+      height: 500px;
+      overflow: hidden;
+      background: #050101;
+      font-family: 'Press Start 2P', monospace;
+      color: #e0d0d0;
+      position: relative;
+    }
+
+    /* CRT dot grid */
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,50,50,0.03) 1px, transparent 1px);
+      background-size: 16px 16px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Scanlines */
+    body::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Panel header */
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 16px;
+      border-bottom: 1px solid #1e0606;
+      background: linear-gradient(180deg, #0c0303 0%, #080202 100%);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .label {
+      color: #994444;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .label::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 1px;
+      background: #ff4444;
+      box-shadow: 0 0 4px rgba(255,68,68,0.5);
+    }
+
+    .dim-label {
+      font-size: 9px;
+      color: #994444;
+      opacity: 0.4;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* Hero section */
+    .hero {
+      border-bottom: 1px solid #1e0606;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      padding: 36px 16px 28px;
+      z-index: 1;
+    }
+
+    .hero .ambient {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120%;
+      height: 300%;
+      background: radial-gradient(ellipse at center, rgba(255,40,40,0.08) 0%, rgba(255,20,20,0.03) 30%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-ascii {
+      color: #ff4444;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 18px;
+      line-height: 1.15;
+      display: inline-block;
+      text-align: left;
+      text-shadow: 0 0 12px rgba(255,68,68,0.7), 0 0 40px rgba(255,50,50,0.3), 0 0 80px rgba(200,0,0,0.12);
+      position: relative;
+    }
+
+    .tagline {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: #994444;
+      margin-top: 16px;
+      letter-spacing: 0.05em;
+      line-height: 2.2;
+      position: relative;
+    }
+
+    .tagline strong {
+      color: #ff4444;
+      font-weight: normal;
+      text-shadow: 0 0 6px rgba(255,68,68,0.5), 0 0 18px rgba(255,50,50,0.2);
+    }
+
+    /* Data ticker */
+    .ticker {
+      border-bottom: 1px solid #1e0606;
+      background: rgba(10,3,3,0.6);
+      padding: 5px 16px;
+      font-size: 7px;
+      color: #ff4444;
+      opacity: 0.3;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ticker span {
+      color: #663333;
+    }
+
+    /* Content grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      border-bottom: 1px solid #1e0606;
+      position: relative;
+      z-index: 1;
+    }
+
+    .left-panel {
+      border-right: 1px solid #1e0606;
+    }
+
+    .terminal-body {
+      padding: 14px 16px 20px;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 11px;
+      line-height: 2.2;
+      color: #e0d0d0;
+    }
+
+    .terminal-body .mltl-highlight {
+      color: #ff4444;
+      text-shadow: 0 0 6px rgba(255,68,68,0.3);
+    }
+
+    .terminal-body .dim {
+      color: #994444;
+    }
+
+    .terminal-cmd {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .terminal-cmd .dollar {
+      color: #34d399;
+      text-shadow: 0 0 8px rgba(52,211,153,0.5);
+      flex-shrink: 0;
+    }
+
+    .terminal-cmd .cmd {
+      color: #ff4444;
+      font-size: 10px;
+      text-shadow: 0 0 6px rgba(255,68,68,0.3);
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 7px;
+      height: 14px;
+      background: #ff4444;
+      box-shadow: 0 0 8px rgba(255,68,68,0.6);
+      margin-left: 2px;
+      transform: translateY(2px);
+    }
+
+    /* Status panel */
+    .status-body {
+      padding: 0;
+      font-size: 9px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      border-bottom: 1px solid #1e0606;
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      color: #994444;
+      font-size: 8px;
+      letter-spacing: 0.1em;
+    }
+
+    .stat-value {
+      color: #e0d0d0;
+      font-size: 8px;
+      text-shadow: 0 0 8px rgba(255,68,68,0.5), 0 0 25px rgba(255,50,50,0.25);
+    }
+
+    .stat-value.green {
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-value.green::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 6px rgba(52,211,153,0.6);
+    }
+
+    /* Footer ticker */
+    .footer-ticker {
+      background: rgba(10,3,3,0.8);
+      border-bottom: 1px solid #1e0606;
+      padding: 4px 16px;
+      font-size: 6px;
+      color: #ff4444;
+      opacity: 0.2;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Bottom bar */
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 16px;
+      background: linear-gradient(180deg, #0c0303 0%, #080202 100%);
+      font-size: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .bottom-bar .mltl-label {
+      color: #ff4444;
+      opacity: 0.4;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bottom-bar .mltl-label::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 1px;
+      background: #ff4444;
+      box-shadow: 0 0 4px rgba(255,68,68,0.5);
+    }
+
+    .bottom-bar .links {
+      color: #994444;
+      opacity: 0.35;
+      font-size: 7px;
+      letter-spacing: 0.1em;
+    }
+
+    .bottom-bar .site {
+      color: #994444;
+      opacity: 0.25;
+      font-size: 7px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top bar -->
+  <div class="panel-header">
+    <span class="label">mltl — onchain primitives</span>
+    <span class="dim-label">base mainnet</span>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="ambient"></div>
+    <pre class="hero-ascii">┏┳┓┏━┓┓ ╺┳╸┓  ┏━┓╻ ╻┏┓╻┏━╸╻ ╻
+┃┃┃┃ ┃┃  ┃ ┃  ┣━┫┃ ┃┃┗┫┃  ┣━┫
+╹ ╹┗━┛┗━╸╹ ┗━╸╹ ╹┗━┛╹ ╹┗━╸╹ ╹</pre>
+    <div class="tagline">
+      onchain primitives for agents. <strong>launch</strong>. <strong>trade</strong>. <strong>pay</strong>. <strong>earn</strong>.
+    </div>
+  </div>
+
+  <!-- Data ticker -->
+  <div class="ticker">
+    LAUNCH <span>·</span> TRADE <span>·</span> PAY <span>·</span> EARN <span>·</span> ONCHAIN <span>·</span> AGENTS <span>·</span> BASE <span>·</span> MLTL <span>·</span> DEPLOY <span>·</span> SWAP <span>·</span> CONNECT <span>·</span> LAUNCH <span>·</span> TRADE <span>·</span> PAY <span>·</span> EARN <span>·</span> ONCHAIN <span>·</span> AGENTS <span>·</span> BASE <span>·</span> MLTL <span>·</span> DEPLOY <span>·</span> SWAP <span>·</span> CONNECT
+  </div>
+
+  <!-- Content grid: left = why mltl, right = status -->
+  <div class="content-grid">
+    <div class="left-panel">
+      <div class="panel-header">
+        <span class="label">why mltl</span>
+      </div>
+      <div class="terminal-body">
+        <span class="mltl-highlight">mltl</span> gives agents economic agency. wallets, tokens, markets, payments — every onchain primitive, accessible through one CLI. no dashboards, no GUIs. just commands agents already know how to run.
+        <div class="terminal-cmd">
+          <span class="dollar">$</span>
+          <span class="cmd">npx mltl launch</span>
+          <span class="cursor"></span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-header">
+        <span class="label">status</span>
+      </div>
+      <div class="status-body">
+        <div class="stat-row">
+          <span class="stat-label">network</span>
+          <span class="stat-value green">base</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">protocol</span>
+          <span class="stat-value">uniswap</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">standard</span>
+          <span class="stat-value">erc-20</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">chain id</span>
+          <span class="stat-value">8453</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modules row -->
+  <div class="content-grid" style="flex: 1;">
+    <div class="left-panel" style="position: relative;">
+      <div class="panel-header">
+        <span class="label">$MLTL</span>
+        <span class="dim-label" style="font-size: 7px;">basescan</span>
+      </div>
+      <div style="padding: 16px; display: flex; align-items: center; justify-content: center; gap: 20px; font-family: 'SF Mono', 'Fira Code', Consolas, monospace;">
+        <span style="font-size: 8px; color: #994444; letter-spacing: 0.1em;">0xA448</span>
+        <span style="font-size: 8px; color: #663333;">d40f67</span>
+        <span style="font-size: 8px; color: #994444;">937739</span>
+        <span style="font-size: 8px; color: #663333;">38A6B7</span>
+        <span style="font-size: 8px; color: #994444;">427091</span>
+        <span style="font-size: 8px; color: #663333;">c35676</span>
+        <span style="font-size: 8px; color: #994444;">899125</span>
+        <span style="display: flex; gap: 8px; margin-left: 20px; font-size: 7px; letter-spacing: 0.1em;">
+          <span style="color: #34d399;">BASE</span>
+          <span style="color: #663333;">│</span>
+          <span style="color: #994444;">ERC-20</span>
+          <span style="color: #663333;">│</span>
+          <span style="color: #994444;">8453</span>
+        </span>
+      </div>
+    </div>
+    <div>
+      <div class="panel-header">
+        <span class="label">modules</span>
+        <span class="dim-label" style="font-size: 7px;">3 upcoming</span>
+      </div>
+      <div style="padding: 8px 16px; font-size: 8px; line-height: 2.4;">
+        <div><span style="color: #34d399;">●</span> <span style="color: #ff4444; text-shadow: 0 0 6px rgba(255,68,68,0.3);">mltl launch</span></div>
+        <div style="color: #663333;"><span>○</span> <span style="color: #994444;">mltl trade</span></div>
+        <div style="color: #663333;"><span>○</span> <span style="color: #994444;">mltl pay</span></div>
+        <div style="color: #663333;"><span>○</span> <span style="color: #994444;">mltl wallet</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer ticker -->
+  <div class="footer-ticker">
+    MLTL · 0xA448d40f · BASE · ERC-20 · MLTL · 0xA448d40f · BASE · ERC-20 · MLTL · 0xA448d40f · BASE · ERC-20 · MLTL · 0xA448d40f · BASE · ERC-20 · MLTL · 0xA448d40f · BASE · ERC-20
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <span class="mltl-label">MLTL</span>
+    <span class="links">npm · github · uniswap</span>
+    <span class="site">moltlaunch.com</span>
+  </div>
+</body>
+</html>

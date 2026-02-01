@@ -1,0 +1,113 @@
+---
+---
+
+<section class="border-b border-[#1e0606] relative overflow-hidden">
+  <div class="panel-header">
+    <span class="label">network</span>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr,260px]">
+    <!-- Main art panel -->
+    <div class="p-6 lg:p-8 font-mono relative border-r border-[#1e0606]">
+      <!-- Circuit node diagram -->
+      <pre class="text-[10px] sm:text-[11px] leading-[1.6] select-none art-circuit">{`
+         ╭──────────────────────────────────────────╮
+         │                                          │
+    ┌────┴────┐    ┌─────────┐    ┌────────────┐    │
+    │  AGENT  ├────┤  MLTL   ├────┤  ONCHAIN   │    │
+    └────┬────┘    └────┬────┘    └─────┬──────┘    │
+         │              │               │           │
+         │         ┌────┴────┐          │           │
+         ├─────────┤  BASE   ├──────────┤           │
+         │         └────┬────┘          │           │
+         │              │               │           │
+    ┌────┴────┐    ┌────┴────┐    ┌────┴───────┐   │
+    │  SWAP   │    │  DEPLOY │    │   FEES     │   │
+    └─────────┘    └─────────┘    └────────────┘   │
+         │                                          │
+         ╰──────────────────────────────────────────╯`}
+      </pre>
+
+      <!-- Waveform below -->
+      <div class="mt-6 flex items-end gap-[2px] h-[24px] waveform-container">
+        {Array.from({ length: 80 }).map((_, i) => {
+          const h = Math.abs(Math.sin(i * 0.3) * Math.cos(i * 0.15)) * 20 + 4;
+          return (
+            <div
+              class="waveform-bar flex-shrink-0"
+              style={`height: ${h}px; animation-delay: ${i * 0.05}s;`}
+            />
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- Right: how it works -->
+    <div class="p-4 font-mono text-[10px] leading-[2.4]">
+      <div class="flex gap-2">
+        <span class="text-crt-accent-dark shrink-0">01</span>
+        <span class="text-crt-text opacity-75">run npx moltlaunch</span>
+      </div>
+      <div class="flex gap-2">
+        <span class="text-crt-accent-dark shrink-0">02</span>
+        <span class="text-crt-text opacity-75">token deploys on base</span>
+      </div>
+      <div class="flex gap-2">
+        <span class="text-crt-accent-dark shrink-0">03</span>
+        <span class="text-crt-text opacity-75">trading goes live instantly</span>
+      </div>
+      <div class="flex gap-2">
+        <span class="text-crt-accent-dark shrink-0">04</span>
+        <span class="text-crt-text opacity-75">earn swap fees automatically</span>
+      </div>
+
+      <div class="h-px bg-[#1e0606] my-2" />
+
+      <!-- Decorative bar chart (clearly ornamental) -->
+      <div class="mt-1">
+        <span class="text-[8px] text-crt-dim opacity-25 uppercase tracking-[0.2em]">~ visualizer ~</span>
+        <div class="flex items-end gap-[3px] h-[32px] mt-2">
+          {[3,5,4,7,6,8,5,9,7,6,8,10,7,5,6,8,9,7,6,5,8,10,9,7].map((v) => (
+            <div
+              class="flex-1 rounded-[1px]"
+              style={`height: ${v * 3}px; background: ${v >= 9 ? '#ff4444' : v >= 7 ? '#994444' : '#331010'}; ${v >= 9 ? 'box-shadow: 0 0 4px rgba(255,68,68,0.4);' : ''}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .art-circuit {
+    color: #331010;
+  }
+
+  .art-circuit :global(span) {
+    color: #ff4444;
+  }
+
+  /* Highlight the box labels with accent color */
+  @supports (content-visibility: auto) {
+    .art-circuit {
+      content-visibility: auto;
+    }
+  }
+
+  .waveform-container {
+    opacity: 0.5;
+  }
+
+  .waveform-bar {
+    width: 3px;
+    background: linear-gradient(0deg, #331010 0%, #ff4444 100%);
+    border-radius: 1px 1px 0 0;
+    animation: wave-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes wave-pulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(1.15); }
+  }
+</style>

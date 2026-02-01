@@ -19,7 +19,10 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev:site": "cd site && npm run dev",
+    "build:site": "cd site && npm run build",
+    "preview:site": "cd site && npm run preview"
   },
   "keywords": [
     "token",

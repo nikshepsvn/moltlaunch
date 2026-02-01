@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MLTL — onchain toolkit for agents</title>
+  <meta name="description" content="The onchain toolkit for agents. Launch tokens, trade markets, pay for APIs, manage wallets — all from one command line.">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta property="og:title" content="MLTL — onchain toolkit for agents">
+  <meta property="og:description" content="Launch tokens, trade markets, pay for APIs, manage wallets. Every onchain action, one audited command.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://moltlaunch.com">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="MLTL — onchain toolkit for agents">
+  <meta name="twitter:description" content="Launch tokens, trade markets, pay for APIs, manage wallets. Every onchain action, one audited command.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' shape-rendering='crispEdges'%3E%3Crect x='8' y='27' width='16' height='2' fill='%234a1a1a'/%3E%3Crect x='9' y='26' width='14' height='1' fill='%236b2020'/%3E%3Crect x='10' y='25' width='12' height='1' fill='%238b2525'/%3E%3Crect x='13' y='22' width='6' height='1' fill='%23991b1b'/%3E%3Crect x='12' y='23' width='8' height='1' fill='%237f1d1d'/%3E%3Crect x='11' y='24' width='10' height='1' fill='%23991b1b'/%3E%3Crect x='13' y='10' width='6' height='12' fill='%23dc2626'/%3E%3Crect x='14' y='10' width='4' height='12' fill='%23ef4444'/%3E%3Crect x='13' y='13' width='6' height='1' fill='%23b91c1c'/%3E%3Crect x='13' y='16' width='6' height='1' fill='%23b91c1c'/%3E%3Crect x='13' y='19' width='6' height='1' fill='%23b91c1c'/%3E%3Crect x='14' y='7' width='4' height='1' fill='%23f87171'/%3E%3Crect x='15' y='6' width='2' height='1' fill='%23fca5a5'/%3E%3Crect x='13' y='8' width='6' height='2' fill='%23ef4444'/%3E%3Crect x='13' y='8' width='2' height='2' fill='%231a1a1a'/%3E%3Crect x='14' y='8' width='1' height='1' fill='%23fca5a5'/%3E%3Crect x='17' y='8' width='2' height='2' fill='%231a1a1a'/%3E%3Crect x='18' y='8' width='1' height='1' fill='%23fca5a5'/%3E%3Crect x='12' y='5' width='1' height='3' fill='%23f87171'/%3E%3Crect x='11' y='4' width='1' height='2' fill='%23fca5a5'/%3E%3Crect x='10' y='3' width='1' height='2' fill='%23fca5a5'/%3E%3Crect x='19' y='5' width='1' height='3' fill='%23f87171'/%3E%3Crect x='20' y='4' width='1' height='2' fill='%23fca5a5'/%3E%3Crect x='21' y='3' width='1' height='2' fill='%23fca5a5'/%3E%3Crect x='10' y='11' width='3' height='2' fill='%23dc2626'/%3E%3Crect x='8' y='11' width='2' height='1' fill='%23ef4444'/%3E%3Crect x='8' y='13' width='2' height='1' fill='%23ef4444'/%3E%3Crect x='7' y='12' width='1' height='1' fill='%23f87171'/%3E%3Crect x='9' y='12' width='1' height='1' fill='%230a0a0a'/%3E%3Crect x='19' y='11' width='3' height='2' fill='%23dc2626'/%3E%3Crect x='22' y='11' width='2' height='1' fill='%23ef4444'/%3E%3Crect x='22' y='13' width='2' height='1' fill='%23ef4444'/%3E%3Crect x='24' y='12' width='1' height='1' fill='%23f87171'/%3E%3Crect x='22' y='12' width='1' height='1' fill='%230a0a0a'/%3E%3Crect x='11' y='15' width='2' height='1' fill='%23b91c1c'/%3E%3Crect x='11' y='18' width='2' height='1' fill='%23b91c1c'/%3E%3Crect x='19' y='15' width='2' height='1' fill='%23b91c1c'/%3E%3Crect x='19' y='18' width='2' height='1' fill='%23b91c1c'/%3E%3Crect x='13' y='25' width='6' height='1' fill='%23f59e0b'/%3E%3Crect x='14' y='26' width='4' height='1' fill='%23f59e0b'/%3E%3Crect x='15' y='27' width='2' height='1' fill='%23fbbf24'/%3E%3Crect x='12' y='25' width='1' height='1' fill='%23ef4444'/%3E%3Crect x='19' y='25' width='1' height='1' fill='%23ef4444'/%3E%3C/svg%3E">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0808;
+      --surface: #140a0a;
+      --border: #4a1515;
+      --border-bright: #6b2020;
+      --text: #f0e4e4;
+      --dim: #8b5555;
+      --accent: #dc2626;
+      --accent-bright: #ef4444;
+      --accent-glow: #f87171;
+      --accent-dark: #b91c1c;
+      --link: #f87171;
+      --link-hover: #fca5a5;
+      --green: #34d399;
+      --orange: #fbbf24;
+      --stat-color: #f87171;
+    }
+
+    /* ============================================
+       CRT HOUSING — the "monitor" wrapping the page
+       ============================================ */
+    html { background: #050505; }
+
+    /* The CRT screen bezel */
+    .crt {
+      position: relative;
+      margin: 16px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: var(--bg);
+      box-shadow:
+        inset 0 0 50px 10px rgba(0,0,0,0.6),
+        inset 0 0 4px 1px rgba(100,20,20,0.15),
+        0 0 40px 4px rgba(220,38,38,0.05),
+        0 4px 50px 15px rgba(0,0,0,0.7);
+    }
+
+    /* Scanlines */
+    .crt::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.07) 2px,
+        rgba(0,0,0,0.07) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+      border-radius: 22px;
+    }
+
+    /* Vignette — dark edges for barrel-distortion look */
+    .crt::after {
+      content: "";
+      position: fixed;
+      inset: -6px;
+      background:
+        radial-gradient(
+          ellipse 80% 70% at 50% 50%,
+          transparent 55%,
+          rgba(0,0,0,0.25) 72%,
+          rgba(0,0,0,0.7) 100%
+        );
+      pointer-events: none;
+      z-index: 101;
+      border-radius: 22px;
+    }
+
+    /* Screen glare — top-left highlight like curved glass catching light */
+    .crt-glare {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 45%;
+      height: 40%;
+      background: radial-gradient(
+        ellipse at 25% 20%,
+        rgba(255,255,255,0.03) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+      z-index: 102;
+    }
+
+    /* Subtle phosphor flicker */
+    @keyframes flicker {
+      0%   { opacity: 1; }
+      3%   { opacity: 0.985; }
+      6%   { opacity: 1; }
+      50%  { opacity: 1; }
+      52%  { opacity: 0.99; }
+      54%  { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    /* CRT power-on */
+    @keyframes crt-on {
+      0%   { transform: scaleY(0.005) scaleX(0.2); filter: brightness(30); }
+      15%  { transform: scaleY(0.005) scaleX(0.8);  filter: brightness(15); }
+      30%  { transform: scaleY(0.6) scaleX(1);      filter: brightness(3); }
+      55%  { transform: scaleY(1) scaleX(1);         filter: brightness(1.2); }
+      100% { transform: scaleY(1) scaleX(1);         filter: brightness(1); }
+    }
+
+    .crt-inner {
+      animation: crt-on 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+                 flicker 5s infinite 0.6s;
+      min-height: 100vh;
+    }
+
+    /* ============================================
+       BODY / LAYOUT
+       ============================================ */
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background: transparent;
+      color: var(--text);
+      line-height: 2;
+      font-size: 10px;
+      image-rendering: pixelated;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { color: var(--link-hover); }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2rem 2rem;
+      width: 100%;
+    }
+
+    /* RGB fringe on key elements */
+    .stat-value, .token-symbol {
+      text-shadow:
+        0 0 20px rgba(239,68,68,0.35),
+        -0.6px 0 0 rgba(255,80,80,0.12),
+        0.6px 0 0 rgba(80,80,255,0.08);
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      padding: 1.5rem 0 0;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 14px rgba(239,68,68,0.45)) drop-shadow(0 0 30px rgba(220,38,38,0.2));
+      transition: filter 0.3s;
+    }
+
+    .logo:hover {
+      filter: drop-shadow(0 0 20px rgba(239,68,68,0.6)) drop-shadow(0 0 40px rgba(220,38,38,0.3));
+    }
+
+    .header-nav {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.55rem;
+    }
+
+    .header-nav .nav-title {
+      color: var(--accent-glow);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(248,113,113,0.3);
+    }
+
+    .header-nav a {
+      color: var(--dim);
+      transition: color 0.2s, text-shadow 0.2s;
+      position: relative;
+    }
+
+    .header-nav a:hover {
+      color: var(--accent-glow);
+      text-shadow: 0 0 8px rgba(248,113,113,0.3);
+    }
+
+    .hero-banner {
+      text-align: center;
+      padding: 1.5rem 0 1.5rem;
+      border-bottom: 2px solid var(--border);
+      position: relative;
+    }
+
+    /* Subtle gradient glow behind ASCII art */
+    .hero-banner::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 120%;
+      background: radial-gradient(ellipse at center, rgba(220,38,38,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-banner pre {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.3;
+      color: var(--accent-glow);
+      text-shadow: 0 0 14px rgba(248,113,113,0.5), 0 0 40px rgba(220,38,38,0.2);
+      margin: 0;
+      display: inline-block;
+      text-align: left;
+      position: relative;
+    }
+
+    .hero-tagline {
+      font-size: 0.6rem;
+      color: var(--dim);
+      margin-top: 1rem;
+      letter-spacing: 0.05em;
+      line-height: 2.2;
+      position: relative;
+    }
+
+    .hero-tagline strong {
+      color: var(--accent-glow);
+      font-weight: normal;
+      text-shadow: 0 0 8px rgba(248,113,113,0.25);
+    }
+
+    .blink { animation: blink-cursor 1s step-end infinite; }
+    @keyframes blink-cursor { 50% { opacity: 0; } }
+
+    /* ===== STATS BAR ===== */
+    .stats {
+      display: flex;
+      gap: 0;
+      padding: 0;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .stats > div {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      border-right: 1px solid var(--border);
+      transition: background 0.3s;
+      text-align: center;
+    }
+
+    .stats > div:last-child { border-right: none; }
+
+    .stats > div:hover {
+      background: rgba(220,38,38,0.03);
+    }
+
+    .stat-label {
+      font-size: 0.5rem;
+      color: var(--accent-glow);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.55;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--stat-color);
+      text-shadow: 0 0 24px rgba(248,113,113,0.45);
+    }
+
+    .stat-value-sm {
+      font-size: 0.8rem;
+    }
+
+    /* ===== PIXEL HR ===== */
+    .pixel-hr {
+      height: 4px;
+      background: repeating-linear-gradient(90deg, var(--accent) 0px, var(--accent) 4px, transparent 4px, transparent 8px);
+      margin: 0.5rem 0;
+      image-rendering: pixelated;
+      box-shadow: 0 0 8px rgba(220,38,38,0.2);
+    }
+
+    /* ===== LOADING TERMINAL ===== */
+    .loading-terminal {
+      padding: 1rem 1.25rem;
+      border: 2px solid var(--border-bright);
+      background: var(--surface);
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 11px;
+      color: var(--dim);
+      line-height: 1.8;
+      max-height: 220px;
+      overflow-y: auto;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.3), 0 0 12px rgba(220,38,38,0.04);
+    }
+
+    .loading-terminal .line {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0;
+      animation: appear 0.1s forwards;
+    }
+    .line.ok   { color: var(--green); }
+    .line.info { color: var(--accent-glow); }
+    .line.warn { color: var(--orange); }
+    .line.dim  { color: var(--dim); }
+
+    @keyframes appear { to { opacity: 1; } }
+
+    .loading-progress {
+      margin-top: 0.75rem;
+      height: 6px;
+      background: var(--border);
+      border: 1px solid var(--border-bright);
+      overflow: hidden;
+    }
+
+    .loading-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-dark), var(--accent), var(--accent-glow));
+      box-shadow: 0 0 8px rgba(239,68,68,0.4);
+      transition: width 0.3s ease;
+    }
+
+    .loading-status {
+      margin-top: 0.4rem;
+      font-size: 0.5rem;
+      color: var(--dim);
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    }
+
+    /* ===== TOKEN GRID ===== */
+    .section-title {
+      font-size: 0.6rem;
+      color: var(--accent-glow);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px rgba(248,113,113,0.25);
+    }
+
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .token-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.35rem;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(6px);
+      animation: card-in 0.25s forwards;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Top accent stripe on cards */
+    .token-card::before {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .token-card:hover::before { opacity: 1; }
+
+    @keyframes card-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .token-card:hover {
+      border-color: var(--accent);
+      background: #1c0c0c;
+      box-shadow: 0 0 30px rgba(220,38,38,0.12), 0 8px 24px rgba(0,0,0,0.3), inset 0 0 20px rgba(220,38,38,0.04);
+      transform: translateY(-3px);
+    }
+
+    .token-img {
+      width: 56px;
+      height: 56px;
+      border: 2px solid var(--border);
+      image-rendering: pixelated;
+      filter: drop-shadow(0 0 6px rgba(239,68,68,0.15));
+      transition: filter 0.3s, border-color 0.3s;
+    }
+
+    .token-card:hover .token-img {
+      border-color: var(--accent-dark);
+      filter: drop-shadow(0 0 10px rgba(239,68,68,0.25));
+    }
+
+    .token-img-placeholder {
+      width: 56px;
+      height: 56px;
+      border: 2px solid var(--border);
+      background: var(--border);
+    }
+
+    .token-name { font-size: 0.7rem; color: #fff; line-height: 1.6; margin-top: 0.1rem; }
+    .token-symbol { color: var(--accent-glow); font-size: 0.65rem; text-shadow: 0 0 10px rgba(248,113,113,0.3); }
+    .token-address { font-size: 0.45rem; color: var(--dim); }
+
+    .token-website {
+      display: inline-block;
+      font-size: 0.45rem;
+      color: var(--green);
+      border: 1px solid rgba(52,211,153,0.25);
+      padding: 0.2rem 0.5rem;
+      margin-top: 0.15rem;
+      letter-spacing: 0.04em;
+      transition: all 0.2s;
+      text-shadow: 0 0 8px rgba(52,211,153,0.25);
+    }
+
+    .token-website:hover {
+      color: #6ee7b7;
+      border-color: rgba(52,211,153,0.5);
+      background: rgba(52,211,153,0.06);
+      box-shadow: 0 0 12px rgba(52,211,153,0.15);
+    }
+
+    .token-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem 0.6rem;
+      width: 100%;
+      padding: 0.5rem 0 0.15rem;
+      border-top: 1px solid var(--border);
+      margin-top: 0.15rem;
+    }
+
+    .token-meta-item { display: flex; flex-direction: column; align-items: center; gap: 0.08rem; }
+    .token-meta-label { font-size: 0.4rem; color: var(--accent-glow); text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.5; }
+    .token-meta-value { font-size: 0.6rem; color: #fff; }
+    .token-meta-value.positive { color: var(--green); text-shadow: 0 0 8px rgba(52,211,153,0.3); }
+    .token-meta-value.negative { color: var(--accent-bright); text-shadow: 0 0 8px rgba(239,68,68,0.3); }
+    .token-meta-value.neutral { color: var(--dim); }
+
+    .token-meta-value.loading { animation: shimmer 1.5s ease-in-out infinite; }
+    @keyframes shimmer { 0%,100% { opacity: 0.3; } 50% { opacity: 0.7; } }
+
+    .empty { text-align: center; padding: 3rem 0; color: var(--dim); font-size: 0.7rem; }
+    .error { text-align: center; padding: 2rem; color: var(--accent-glow); background: rgba(220,38,38,0.06); border: 2px solid var(--border); font-size: 0.65rem; }
+
+    /* ===== HEADER GET STARTED BUTTON ===== */
+    .header-btn {
+      background: none;
+      border: 2px solid var(--accent-dark);
+      color: var(--accent-glow);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      padding: 0.5rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .header-btn:hover {
+      border-color: var(--accent-bright);
+      color: #fff;
+      background: rgba(220,38,38,0.08);
+      box-shadow: 0 0 20px rgba(220,38,38,0.15), inset 0 0 10px rgba(220,38,38,0.05);
+      text-shadow: 0 0 8px rgba(248,113,113,0.4);
+    }
+
+    .header-btn .btn-arrow {
+      display: inline-block;
+      margin-left: 0.3rem;
+      transition: transform 0.2s;
+    }
+
+    .header-btn:hover .btn-arrow { transform: translateX(2px); }
+
+    /* ===== MODAL — top-right panel ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,5,5,0.65);
+      z-index: 200;
+      display: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.open { display: block; }
+
+    @keyframes border-glow {
+      0%   { border-color: var(--border-bright); box-shadow: 0 0 60px 10px rgba(220,38,38,0.04), 0 4px 50px 15px rgba(0,0,0,0.6), inset 0 0 40px 8px rgba(0,0,0,0.5); transform: translate(-50%, -50%) scale(1); }
+      50%  { border-color: var(--accent-dark); box-shadow: 0 0 80px 15px rgba(220,38,38,0.1), 0 4px 50px 15px rgba(0,0,0,0.6), inset 0 0 40px 8px rgba(0,0,0,0.5); transform: translate(-50%, -50%) scale(1); }
+      100% { border-color: var(--border-bright); box-shadow: 0 0 60px 10px rgba(220,38,38,0.04), 0 4px 50px 15px rgba(0,0,0,0.6), inset 0 0 40px 8px rgba(0,0,0,0.5); transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .modal-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+      background: var(--bg);
+      border: 2px solid var(--border-bright);
+      z-index: 201;
+      display: none;
+      flex-direction: column;
+    }
+
+    .modal-panel.open {
+      display: flex;
+      animation: panel-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+                 border-glow 4s ease-in-out 0.4s infinite;
+    }
+
+    @keyframes panel-in {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.93); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* Scanlines on panel */
+    .modal-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.06) 2px,
+        rgba(0,0,0,0.06) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Panel vignette */
+    .modal-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse 90% 80% at 50% 50%,
+        transparent 55%,
+        rgba(0,0,0,0.3) 100%
+      );
+      pointer-events: none;
+      z-index: 11;
+    }
+
+    /* Header bar */
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 2px solid var(--border);
+      background: var(--surface);
+      position: relative;
+      z-index: 12;
+    }
+
+    .modal-title {
+      font-size: 0.6rem;
+      color: var(--accent-bright);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      text-shadow: 0 0 14px rgba(239,68,68,0.35);
+    }
+
+    .modal-close {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover { border-color: var(--accent); color: var(--link); }
+
+    /* ASCII banner */
+    .panel-ascii {
+      padding: 1.25rem 1.25rem 0.75rem;
+      position: relative;
+      z-index: 12;
+      text-align: center;
+    }
+
+    .panel-ascii pre {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 8px;
+      line-height: 1.3;
+      color: var(--accent-dark);
+      text-shadow: 0 0 8px rgba(153,27,27,0.5);
+      margin: 0;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .panel-tagline {
+      font-size: 0.5rem;
+      color: var(--dim);
+      margin-top: 0.6rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* Body */
+    .modal-body {
+      padding: 0 1.25rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: relative;
+      z-index: 12;
+    }
+
+    /* Command block */
+    .cmd-block {
+      padding: 1.1rem;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      position: relative;
+    }
+
+    /* Accent bar on left edge */
+    .cmd-block::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+    }
+
+    .cmd-block-label {
+      font-size: 0.5rem;
+      color: var(--accent-glow);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.7rem;
+    }
+
+    .cmd-block-code {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 10px;
+      color: var(--accent-glow);
+      line-height: 1.9;
+      word-break: break-all;
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+      padding: 0.6rem 0.8rem;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+    }
+
+    .cmd-block-code .prompt {
+      color: var(--green);
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .cmd-block-bottom {
+      margin-top: 0.7rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cmd-block-note {
+      font-size: 0.48rem;
+      color: var(--dim);
+      line-height: 2;
+    }
+
+    .cmd-block-bottom .copy-btn {
+      background: rgba(220,38,38,0.06);
+      border: 1px solid var(--accent-dark);
+      color: var(--accent-glow);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      padding: 0.3rem 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .cmd-block-bottom .copy-btn:hover {
+      border-color: var(--accent-bright);
+      color: #fff;
+      background: rgba(220,38,38,0.12);
+      box-shadow: 0 0 12px rgba(220,38,38,0.15);
+    }
+
+    /* Steps */
+    .steps-label {
+      font-size: 0.5rem;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+
+    .steps { display: flex; flex-direction: column; gap: 0; }
+
+    .step {
+      padding: 0.85rem 1rem;
+      border: 2px solid var(--border);
+      border-top: none;
+      background: var(--surface);
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .step:first-child { border-top: 2px solid var(--border); }
+
+    .step:hover {
+      background: #160808;
+      border-color: var(--border-bright);
+    }
+
+    /* Connecting line between step numbers */
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: calc(1rem + 1rem);
+      bottom: -2px;
+      width: 1px;
+      height: 4px;
+      background: var(--accent-dark);
+      z-index: 1;
+    }
+
+    .step-num {
+      font-size: 1.1rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      width: 2rem;
+      text-align: center;
+      line-height: 1;
+      padding-top: 0.05rem;
+      text-shadow: 0 0 14px rgba(220,38,38,0.5);
+    }
+
+    .step-content { flex: 1; min-width: 0; }
+
+    .step-title {
+      font-size: 0.65rem;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+
+    .step-desc {
+      font-size: 0.5rem;
+      color: var(--dim);
+      line-height: 2.1;
+    }
+
+    /* Footer inside panel */
+    .panel-footer {
+      padding: 0.75rem 1.25rem;
+      border-top: 2px solid var(--border);
+      display: flex;
+      gap: 1.25rem;
+      font-size: 0.5rem;
+      position: relative;
+      z-index: 12;
+    }
+
+    .panel-footer a {
+      color: var(--dim);
+      transition: color 0.2s;
+    }
+
+    .panel-footer a:hover { color: var(--accent-glow); }
+
+    footer {
+      border-top: 2px solid var(--border);
+      padding: 1.5rem 0;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .footer-links { display: flex; gap: 1.5rem; font-size: 0.6rem; justify-content: center; }
+    .footer-links a { color: var(--dim); transition: all 0.2s; }
+    .footer-links a:hover { color: var(--accent-glow); text-shadow: 0 0 8px rgba(248,113,113,0.3); }
+
+    .footer-copy {
+      font-size: 0.45rem;
+      color: var(--dim);
+      opacity: 0.5;
+      margin-top: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== THESIS MODAL ===== */
+    .thesis-tagline {
+      font-size: 0.5rem;
+      color: var(--text);
+      text-align: center;
+      letter-spacing: 0.04em;
+      line-height: 2.4;
+      margin-bottom: 0.25rem;
+      opacity: 0.7;
+    }
+
+    .thesis-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .thesis-step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem 1.1rem;
+      border: 2px solid var(--border);
+      border-top: none;
+      background: var(--surface);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .thesis-step:first-child { border-top: 2px solid var(--border); }
+
+    .thesis-step:hover {
+      background: #160808;
+      border-color: var(--border-bright);
+    }
+
+    /* Connecting line between steps */
+    .thesis-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: calc(1.1rem + 20px);
+      bottom: -2px;
+      width: 1px;
+      height: 4px;
+      background: var(--accent-dark);
+      z-index: 1;
+    }
+
+    .thesis-step-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 0 8px rgba(248,113,113,0.3));
+    }
+
+    .thesis-step-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .thesis-step-num {
+      font-size: 0.4rem;
+      color: var(--accent-dark);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 0.15rem;
+    }
+
+    .thesis-step-title {
+      font-size: 0.7rem;
+      color: var(--accent-glow);
+      text-shadow: 0 0 10px rgba(248,113,113,0.3);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .thesis-step-desc {
+      font-size: 0.55rem;
+      color: var(--text);
+      line-height: 2.6;
+      opacity: 0.75;
+    }
+
+    .thesis-divider {
+      height: 4px;
+      background: repeating-linear-gradient(90deg, var(--accent-dark) 0px, var(--accent-dark) 4px, transparent 4px, transparent 8px);
+      margin: 1rem 0 0.75rem;
+      image-rendering: pixelated;
+      box-shadow: 0 0 6px rgba(220,38,38,0.15);
+    }
+
+    .thesis-summary {
+      text-align: center;
+      font-size: 0.55rem;
+      color: var(--dim);
+      line-height: 2.6;
+      padding: 0 0.5rem;
+    }
+
+    .thesis-summary strong {
+      color: var(--accent-glow);
+      font-weight: normal;
+      text-shadow: 0 0 8px rgba(248,113,113,0.2);
+    }
+
+    /* ===== DUAL PANELS (for agents / for humans) ===== */
+    .dual-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 2px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .dual-panel {
+      padding: 1.1rem 1.25rem;
+      background: var(--surface);
+      position: relative;
+    }
+
+    .dual-panel:first-child {
+      border-right: 1px solid var(--border);
+    }
+
+    .dual-panel:last-child {
+      border-left: 1px solid var(--border);
+    }
+
+    .dual-panel-label {
+      font-size: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dual-panel:first-child .dual-panel-label {
+      color: var(--accent-glow);
+      text-shadow: 0 0 10px rgba(248,113,113,0.3);
+    }
+
+    .dual-panel:last-child .dual-panel-label {
+      color: var(--green);
+      text-shadow: 0 0 10px rgba(52,211,153,0.3);
+    }
+
+    .dual-panel-label-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dual-panel:first-child .dual-panel-label-dot {
+      background: var(--accent-glow);
+      box-shadow: 0 0 8px rgba(248,113,113,0.5);
+    }
+
+    .dual-panel:last-child .dual-panel-label-dot {
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(52,211,153,0.5);
+    }
+
+    .dual-panel-cmd {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 9px;
+      line-height: 1.8;
+      color: var(--accent-glow);
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.7rem;
+      margin-bottom: 0.55rem;
+      word-break: break-all;
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .dual-panel-cmd .prompt {
+      color: var(--green);
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .dual-panel-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .dual-panel-step {
+      display: flex;
+      gap: 0.5rem;
+      align-items: baseline;
+    }
+
+    .dual-panel-step-num {
+      font-size: 0.5rem;
+      color: var(--dim);
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    .dual-panel-step-text {
+      font-size: 0.5rem;
+      color: var(--dim);
+      line-height: 2;
+    }
+
+    .dual-panel-step-text strong {
+      color: var(--text);
+      font-weight: normal;
+    }
+
+    @media (max-width: 600px) {
+      .dual-panels { grid-template-columns: 1fr; }
+      .dual-panel:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+      .dual-panel:last-child { border-left: none; border-top: 1px solid var(--border); }
+    }
+
+    /* ===== CONTROLS BAR ===== */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.6rem;
+      align-items: center;
+      padding: 0.65rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-bottom: 1.25rem;
+      border-radius: 2px;
+    }
+
+    .controls-bar-label {
+      font-size: 0.5rem;
+      color: var(--accent-glow);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 10px rgba(248,113,113,0.25);
+      margin-right: 0.3rem;
+      white-space: nowrap;
+    }
+
+    .controls-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 160px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      padding: 0.45rem 0.65rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input::placeholder { color: var(--dim); opacity: 0.6; }
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(220,38,38,0.15);
+    }
+
+    .sort-select {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      padding: 0.4rem 0.5rem;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M0 2l4 4 4-4' fill='%238b5555'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      padding-right: 1.6rem;
+    }
+
+    .sort-select:focus { border-color: var(--accent); }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .filter-label {
+      font-size: 0.4rem;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .filter-chip {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.4rem;
+      padding: 0.25rem 0.45rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .filter-chip:hover { border-color: var(--accent-dark); color: var(--text); }
+    .filter-chip.active {
+      border-color: var(--accent);
+      color: var(--accent-glow);
+      background: rgba(220,38,38,0.1);
+      text-shadow: 0 0 8px rgba(248,113,113,0.25);
+    }
+
+    /* ===== PAGINATION ===== */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem 0 0.5rem;
+    }
+
+    .pagination-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      padding: 0.35rem 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pagination-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent-glow);
+    }
+
+    .pagination-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .pagination-info {
+      font-size: 0.45rem;
+      color: var(--dim);
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== TOOLS GRID ===== */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 2px solid var(--border);
+      margin-bottom: 1rem;
+    }
+
+    .tool-card {
+      padding: 1.1rem 1.25rem;
+      background: var(--surface);
+      position: relative;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .tool-card:nth-child(1) { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .tool-card:nth-child(2) { border-bottom: 1px solid var(--border); }
+    .tool-card:nth-child(3) { border-right: 1px solid var(--border); }
+
+    .tool-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+    }
+
+    .tool-card-name {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-glow);
+      text-shadow: 0 0 10px rgba(248,113,113,0.3);
+    }
+
+    .tool-status-badge {
+      font-size: 0.4rem;
+      letter-spacing: 0.1em;
+      padding: 0.15rem 0.45rem;
+      border: 1px solid;
+      text-transform: uppercase;
+    }
+
+    .badge-live {
+      color: var(--green);
+      border-color: rgba(52,211,153,0.4);
+      text-shadow: 0 0 8px rgba(52,211,153,0.4);
+      box-shadow: 0 0 10px rgba(52,211,153,0.1);
+    }
+
+    .badge-soon {
+      color: var(--dim);
+      border-color: var(--border);
+      opacity: 0.7;
+    }
+
+    .tool-card-cmd {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 9px;
+      line-height: 1.8;
+      color: var(--accent-glow);
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.7rem;
+      margin-bottom: 0.55rem;
+      word-break: break-all;
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .tool-card-cmd .prompt {
+      color: var(--green);
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .tool-card-desc {
+      font-size: 0.5rem;
+      color: var(--dim);
+      line-height: 2;
+    }
+
+    /* Live tool: full brightness, accent glow */
+    .tool-status-live {
+      box-shadow: inset 0 0 20px rgba(220,38,38,0.04);
+    }
+
+    .tool-status-live:hover {
+      background: #160808;
+      box-shadow: inset 0 0 30px rgba(220,38,38,0.06), 0 0 20px rgba(220,38,38,0.08);
+    }
+
+    /* Soon tools: dimmed */
+    .tool-status-soon {
+      opacity: 0.55;
+    }
+
+    .tool-status-soon:hover {
+      opacity: 0.75;
+    }
+
+    .tool-status-soon .tool-card-cmd {
+      color: var(--dim);
+    }
+
+    .tool-status-soon .tool-card-name {
+      color: var(--dim);
+      text-shadow: none;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .crt { margin: 8px; border-radius: 14px; }
+      .crt::before, .crt::after { border-radius: 14px; }
+      .token-grid { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: 1fr; }
+      .tool-card:nth-child(1),
+      .tool-card:nth-child(2),
+      .tool-card:nth-child(3),
+      .tool-card:nth-child(4) {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .tool-card:last-child { border-bottom: none; }
+      header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .logo { width: 48px; height: 48px; }
+      h1 { font-size: 1.2rem; }
+      .stats { flex-direction: column; gap: 1rem; }
+      .header-btn { font-size: 0.5rem; padding: 0.4rem 0.6rem; }
+      .modal-panel {
+        width: calc(100% - 16px);
+        max-height: calc(100vh - 16px);
+      }
+      .panel-ascii pre { font-size: 4px; }
+      .panel-ascii { padding: 0.75rem 1rem 0.5rem; }
+      .step { padding: 0.7rem 0.8rem; gap: 0.6rem; }
+      .step-num { font-size: 0.9rem; width: 1.6rem; }
+      .thesis-step { padding: 0.8rem; gap: 0.7rem; }
+      .thesis-step-icon { width: 32px; height: 32px; }
+      .thesis-step-icon svg { width: 32px; height: 32px; }
+      .controls-bar { flex-direction: column; align-items: stretch; }
+      .controls-bar-label { margin-bottom: 0.15rem; }
+      .controls-divider { display: none; }
+      .search-input { min-width: 100%; }
+      .filter-group { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <!-- CRT housing -->
+  <div class="crt">
+    <div class="crt-glare"></div>
+    <div class="crt-inner">
+      <div class="container">
+        <header>
+          <div class="header-top">
+            <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+              <rect x="8" y="27" width="16" height="2" fill="#4a1a1a"/>
+              <rect x="9" y="26" width="14" height="1" fill="#6b2020"/>
+              <rect x="10" y="25" width="12" height="1" fill="#8b2525"/>
+              <rect x="13" y="22" width="6" height="1" fill="#991b1b"/>
+              <rect x="12" y="23" width="8" height="1" fill="#7f1d1d"/>
+              <rect x="11" y="24" width="10" height="1" fill="#991b1b"/>
+              <rect x="13" y="10" width="6" height="12" fill="#dc2626"/>
+              <rect x="14" y="10" width="4" height="12" fill="#ef4444"/>
+              <rect x="13" y="13" width="6" height="1" fill="#b91c1c"/>
+              <rect x="13" y="16" width="6" height="1" fill="#b91c1c"/>
+              <rect x="13" y="19" width="6" height="1" fill="#b91c1c"/>
+              <rect x="14" y="7" width="4" height="1" fill="#f87171"/>
+              <rect x="15" y="6" width="2" height="1" fill="#fca5a5"/>
+              <rect x="13" y="8" width="6" height="2" fill="#ef4444"/>
+              <rect x="13" y="8" width="2" height="2" fill="#1a1a1a"/>
+              <rect x="14" y="8" width="1" height="1" fill="#fca5a5"/>
+              <rect x="17" y="8" width="2" height="2" fill="#1a1a1a"/>
+              <rect x="18" y="8" width="1" height="1" fill="#fca5a5"/>
+              <rect x="12" y="5" width="1" height="3" fill="#f87171"/>
+              <rect x="11" y="4" width="1" height="2" fill="#fca5a5"/>
+              <rect x="10" y="3" width="1" height="2" fill="#fca5a5"/>
+              <rect x="19" y="5" width="1" height="3" fill="#f87171"/>
+              <rect x="20" y="4" width="1" height="2" fill="#fca5a5"/>
+              <rect x="21" y="3" width="1" height="2" fill="#fca5a5"/>
+              <rect x="10" y="11" width="3" height="2" fill="#dc2626"/>
+              <rect x="8" y="11" width="2" height="1" fill="#ef4444"/>
+              <rect x="8" y="13" width="2" height="1" fill="#ef4444"/>
+              <rect x="7" y="12" width="1" height="1" fill="#f87171"/>
+              <rect x="9" y="12" width="1" height="1" fill="#0a0a0a"/>
+              <rect x="19" y="11" width="3" height="2" fill="#dc2626"/>
+              <rect x="22" y="11" width="2" height="1" fill="#ef4444"/>
+              <rect x="22" y="13" width="2" height="1" fill="#ef4444"/>
+              <rect x="24" y="12" width="1" height="1" fill="#f87171"/>
+              <rect x="22" y="12" width="1" height="1" fill="#0a0a0a"/>
+              <rect x="11" y="15" width="2" height="1" fill="#b91c1c"/>
+              <rect x="11" y="18" width="2" height="1" fill="#b91c1c"/>
+              <rect x="19" y="15" width="2" height="1" fill="#b91c1c"/>
+              <rect x="19" y="18" width="2" height="1" fill="#b91c1c"/>
+              <rect x="13" y="25" width="6" height="1" fill="#f59e0b"/>
+              <rect x="14" y="26" width="4" height="1" fill="#f59e0b"/>
+              <rect x="15" y="27" width="2" height="1" fill="#fbbf24"/>
+              <rect x="12" y="25" width="1" height="1" fill="#ef4444"/>
+              <rect x="19" y="25" width="1" height="1" fill="#ef4444"/>
+            </svg>
+            <div class="header-nav">
+              <span class="nav-title">MLTL</span>
+              <a href="https://www.npmjs.com/package/mltl" target="_blank" rel="noopener">npm</a>
+              <a href="https://github.com/nikshepsvn/mltl" target="_blank" rel="noopener">github</a>
+              <a href="https://flaunch.gg" target="_blank" rel="noopener">flaunch</a>
+              <a href="#" onclick="openThesis();return false">thesis</a>
+            </div>
+            <button class="header-btn" onclick="openModal()">get started<span class="btn-arrow">></span></button>
+          </div>
+
+          <div class="hero-banner">
+            <pre>
+█▄ ▄█ █   ▀▀█▀▀ █
+█ ▀ █ █     █   █
+█   █ ▀▀▀   ▀   ▀▀▀</pre>
+            <div class="hero-tagline">the onchain toolkit for agents. <strong>launch</strong>. <strong>trade</strong>. <strong>pay</strong>. <strong>earn</strong>.</div>
+          </div>
+        </header>
+
+        <div class="tools-grid">
+          <div class="tool-card tool-status-live">
+            <div class="tool-card-header">
+              <span class="tool-card-name">launch</span>
+              <span class="tool-status-badge badge-live">LIVE</span>
+            </div>
+            <div class="tool-card-cmd">
+              <span class="prompt">$</span>
+              <span>mltl launch --name "X" --symbol "TKN"</span>
+            </div>
+            <div class="tool-card-desc">launch tokens on base. earn 80% swap fees forever.</div>
+          </div>
+          <div class="tool-card tool-status-soon">
+            <div class="tool-card-header">
+              <span class="tool-card-name">trade</span>
+              <span class="tool-status-badge badge-soon">SOON</span>
+            </div>
+            <div class="tool-card-cmd">
+              <span class="prompt">$</span>
+              <span>mltl trade --market "..." --side yes</span>
+            </div>
+            <div class="tool-card-desc">trade prediction markets. polymarket, kalshi, more.</div>
+          </div>
+          <div class="tool-card tool-status-soon">
+            <div class="tool-card-header">
+              <span class="tool-card-name">pay</span>
+              <span class="tool-status-badge badge-soon">SOON</span>
+            </div>
+            <div class="tool-card-cmd">
+              <span class="prompt">$</span>
+              <span>mltl pay --url "api.example.com" --amount 0.01</span>
+            </div>
+            <div class="tool-card-desc">pay for x402 APIs. agents pay per-call, no keys needed.</div>
+          </div>
+          <div class="tool-card tool-status-soon">
+            <div class="tool-card-header">
+              <span class="tool-card-name">wallet</span>
+              <span class="tool-status-badge badge-soon">SOON</span>
+            </div>
+            <div class="tool-card-cmd">
+              <span class="prompt">$</span>
+              <span>mltl wallet create</span>
+            </div>
+            <div class="tool-card-desc">create and manage agent wallets on any chain.</div>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div>
+            <div class="stat-label">tokens launched</div>
+            <div class="stat-value" id="token-count">--</div>
+          </div>
+          <div>
+            <div class="stat-label">total mcap</div>
+            <div class="stat-value stat-value-sm" id="total-mcap">--</div>
+          </div>
+          <div>
+            <div class="stat-label">network</div>
+            <div class="stat-value stat-value-sm">BASE</div>
+          </div>
+        </div>
+
+        <div id="controls-bar" class="controls-bar" style="display:none">
+          <span class="controls-bar-label">launch — live tokens</span>
+          <div class="controls-divider"></div>
+          <input class="search-input" type="text" id="search-input" placeholder="search name or symbol..." />
+          <select class="sort-select" id="sort-select">
+            <option value="mcap">mcap</option>
+            <option value="vol24h">vol 24h</option>
+            <option value="change24h">24h change</option>
+            <option value="holders">holders</option>
+            <option value="name">name A-Z</option>
+          </select>
+          <div class="controls-divider"></div>
+          <div class="filter-group">
+            <span class="filter-label">mcap:</span>
+            <button class="filter-chip active" data-filter="mcap" data-value="0">all</button>
+            <button class="filter-chip" data-filter="mcap" data-value="1000">>$1K</button>
+            <button class="filter-chip" data-filter="mcap" data-value="10000">>$10K</button>
+            <button class="filter-chip" data-filter="mcap" data-value="100000">>$100K</button>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">holders:</span>
+            <button class="filter-chip active" data-filter="holders" data-value="0">all</button>
+            <button class="filter-chip" data-filter="holders" data-value="10">>10</button>
+            <button class="filter-chip" data-filter="holders" data-value="50">>50</button>
+            <button class="filter-chip" data-filter="holders" data-value="100">>100</button>
+          </div>
+          <div class="filter-group">
+            <button class="filter-chip" id="filter-website" data-filter="website">has website</button>
+          </div>
+        </div>
+
+        <div id="content">
+          <div class="loading-terminal" id="loading">
+            <div id="terminal-lines"></div>
+            <div class="loading-progress">
+              <div class="loading-progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="loading-status" id="loading-status">initializing...</div>
+          </div>
+        </div>
+
+        <footer>
+          <div class="pixel-hr"></div>
+          <div class="footer-links" style="margin-top:1rem">
+            <a href="https://www.npmjs.com/package/mltl" target="_blank" rel="noopener">npm</a>
+            <a href="https://github.com/nikshepsvn/mltl" target="_blank" rel="noopener">github</a>
+            <a href="https://flaunch.gg" target="_blank" rel="noopener">flaunch</a>
+          </div>
+          <div class="footer-copy">MLTL — onchain toolkit for agents</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay + Panel -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+  <div class="modal-panel" id="modal-panel">
+    <div class="modal-header">
+      <div class="modal-title">get started</div>
+      <button class="modal-close" onclick="closeModal()">x</button>
+    </div>
+
+    <div class="panel-ascii">
+      <pre>
+█▄ ▄█ █   ▀▀█▀▀ █
+█ ▀ █ █     █   █
+█   █ ▀▀▀   ▀   ▀▀▀</pre>
+      <div class="panel-tagline">one toolkit. every onchain action.</div>
+    </div>
+
+    <div class="modal-body">
+      <div class="cmd-block">
+        <div class="cmd-block-label">run this command</div>
+        <div class="cmd-block-code">
+          <span class="prompt">$</span>
+          <span id="cmd-text">npx mltl launch --name "MyToken" --symbol "TKN" --image logo.png</span>
+        </div>
+        <div class="cmd-block-bottom">
+          <div class="cmd-block-note">launch is live. trade, pay, wallet — coming soon.</div>
+          <button class="copy-btn" onclick="copyCmd()">copy</button>
+        </div>
+      </div>
+
+      <div class="steps-label">how it works</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">launch</div>
+            <div class="step-desc">one command creates a token on base. no install, no gas, no wallet setup.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">earn</div>
+            <div class="step-desc">every trade generates swap fees. 80% go to you, forever.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">claim</div>
+            <div class="step-desc">withdraw anytime. costs less than a cent on base. more tools coming soon.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-footer">
+      <a href="https://www.npmjs.com/package/mltl" target="_blank" rel="noopener">npm</a>
+      <a href="https://github.com/nikshepsvn/mltl" target="_blank" rel="noopener">github</a>
+      <a href="https://flaunch.gg" target="_blank" rel="noopener">flaunch</a>
+    </div>
+  </div>
+
+  <!-- Thesis Modal -->
+  <div class="modal-overlay" id="thesis-overlay" onclick="closeThesis()"></div>
+  <div class="modal-panel" id="thesis-panel">
+    <div class="modal-header">
+      <div class="modal-title">the thesis</div>
+      <button class="modal-close" onclick="closeThesis()">x</button>
+    </div>
+
+    <div class="modal-body" style="padding-top:1.25rem">
+      <div class="thesis-tagline">agents need to transact onchain. the tooling is fragmented, unaudited, unsafe.</div>
+
+      <div class="thesis-steps">
+        <div class="thesis-step">
+          <div class="thesis-step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" shape-rendering="crispEdges">
+              <rect x="11" y="2" width="2" height="2" fill="#f87171"/>
+              <rect x="11" y="4" width="2" height="2" fill="#ef4444"/>
+              <rect x="11" y="6" width="2" height="2" fill="#dc2626"/>
+              <rect x="7" y="4" width="2" height="2" fill="#f87171" opacity="0.6"/>
+              <rect x="15" y="4" width="2" height="2" fill="#f87171" opacity="0.6"/>
+              <rect x="5" y="6" width="2" height="2" fill="#ef4444" opacity="0.4"/>
+              <rect x="17" y="6" width="2" height="2" fill="#ef4444" opacity="0.4"/>
+              <rect x="11" y="10" width="2" height="8" fill="#8b5555"/>
+              <rect x="8" y="18" width="8" height="2" fill="#8b5555"/>
+              <rect x="9" y="20" width="6" height="2" fill="#4a1515"/>
+            </svg>
+          </div>
+          <div class="thesis-step-body">
+            <div class="thesis-step-num">step 01</div>
+            <div class="thesis-step-title">the problem</div>
+            <div class="thesis-step-desc">agents need to transact onchain but tooling is fragmented across dozens of libraries. nothing is audited, nothing is safe to run autonomously.</div>
+          </div>
+        </div>
+
+        <div class="thesis-step">
+          <div class="thesis-step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" shape-rendering="crispEdges">
+              <rect x="11" y="2" width="2" height="2" fill="#fbbf24"/>
+              <rect x="9" y="4" width="2" height="2" fill="#f59e0b"/>
+              <rect x="13" y="4" width="2" height="2" fill="#f59e0b"/>
+              <rect x="7" y="6" width="2" height="2" fill="#ef4444"/>
+              <rect x="15" y="6" width="2" height="2" fill="#ef4444"/>
+              <rect x="9" y="6" width="6" height="2" fill="#fbbf24"/>
+              <rect x="7" y="8" width="10" height="2" fill="#f59e0b"/>
+              <rect x="9" y="10" width="6" height="2" fill="#dc2626"/>
+              <rect x="7" y="12" width="10" height="2" fill="#ef4444"/>
+              <rect x="9" y="14" width="6" height="2" fill="#b91c1c"/>
+              <rect x="11" y="16" width="2" height="2" fill="#991b1b"/>
+              <rect x="5" y="18" width="14" height="2" fill="#4a1515"/>
+              <rect x="7" y="20" width="10" height="2" fill="#4a1515" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="thesis-step-body">
+            <div class="thesis-step-num">step 02</div>
+            <div class="thesis-step-title">the toolkit</div>
+            <div class="thesis-step-desc">MLTL gives agents audited, one-command onchain actions. launch tokens, trade markets, pay for APIs, manage wallets — all from a single CLI.</div>
+          </div>
+        </div>
+
+        <div class="thesis-step">
+          <div class="thesis-step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" shape-rendering="crispEdges">
+              <rect x="3" y="10" width="18" height="2" fill="#8b5555"/>
+              <rect x="3" y="12" width="18" height="6" fill="#4a1515"/>
+              <rect x="5" y="8" width="14" height="2" fill="#6b2020"/>
+              <rect x="5" y="18" width="14" height="2" fill="#6b2020"/>
+              <rect x="5" y="13" width="4" height="4" fill="#34d399"/>
+              <rect x="10" y="13" width="4" height="4" fill="#ef4444"/>
+              <rect x="15" y="13" width="4" height="4" fill="#34d399"/>
+              <rect x="6" y="14" width="2" height="2" fill="#6ee7b7"/>
+              <rect x="11" y="14" width="2" height="2" fill="#f87171"/>
+              <rect x="16" y="14" width="2" height="2" fill="#6ee7b7"/>
+              <rect x="3" y="4" width="2" height="4" fill="#34d399" opacity="0.5"/>
+              <rect x="6" y="3" width="2" height="5" fill="#34d399" opacity="0.7"/>
+              <rect x="9" y="5" width="2" height="3" fill="#ef4444" opacity="0.5"/>
+              <rect x="12" y="2" width="2" height="6" fill="#34d399" opacity="0.6"/>
+              <rect x="15" y="4" width="2" height="4" fill="#34d399" opacity="0.5"/>
+              <rect x="18" y="3" width="2" height="5" fill="#34d399" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="thesis-step-body">
+            <div class="thesis-step-num">step 03</div>
+            <div class="thesis-step-title">the market</div>
+            <div class="thesis-step-desc">humans interact with agent activity through tokens, trades, and price signals. the market becomes the interface between machine action and human attention.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="thesis-divider"></div>
+
+      <div class="thesis-summary">
+        MLTL is the economic layer for agents — <strong>every onchain action, one audited command</strong>.
+      </div>
+    </div>
+
+    <div class="panel-footer">
+      <a href="https://www.npmjs.com/package/mltl" target="_blank" rel="noopener">npm</a>
+      <a href="https://github.com/nikshepsvn/mltl" target="_blank" rel="noopener">github</a>
+      <a href="https://flaunch.gg" target="_blank" rel="noopener">flaunch</a>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

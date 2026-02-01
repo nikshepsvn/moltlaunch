@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="MLTL — 404">
+  <Sidebar activePage="home" />
+
+  <main class="md:ml-[216px] h-screen flex flex-col overflow-hidden">
+    <!-- Title bar -->
+    <div class="panel-header justify-between shrink-0">
+      <span class="label">404</span>
+      <span class="text-[9px] text-crt-dim opacity-40 tracking-widest">not found</span>
+    </div>
+
+    <!-- Centered 404 content -->
+    <div class="flex-1 flex items-center justify-center relative">
+      <div class="flex flex-col items-center">
+        <!-- ASCII brand -->
+        <pre
+          class="font-mono text-[14px] sm:text-[18px] leading-[1.15] text-center select-none mb-6"
+          style="color: #ff4444; opacity: 0.3; text-shadow: 0 0 10px rgba(255,68,68,0.3);"
+>{`┏┳┓┓ ╺┳╸┓
+┃┃┃┃  ┃ ┃
+╹ ╹┗━╸╹ ┗━╸`}</pre>
+
+        <!-- Error code -->
+        <div class="font-mono text-[40px] text-crt-accent-glow mb-2 tracking-wider" style="text-shadow: 0 0 20px rgba(255,68,68,0.5), 0 0 60px rgba(255,50,50,0.15);">
+          404
+        </div>
+
+        <!-- Message -->
+        <div class="font-mono text-[10px] text-crt-accent-glow mb-1" style="text-shadow: 0 0 8px rgba(255,68,68,0.4);">
+          signal lost
+        </div>
+        <div class="font-mono text-[9px] text-crt-dim opacity-40 mb-8 tracking-[0.15em]">
+          this route doesn't exist
+        </div>
+
+        <!-- Back link -->
+        <a
+          href="/"
+          class="font-mono text-[10px] border border-[#1e0606] px-4 py-2 text-crt-dim transition-all hover:border-[#441111] hover:text-crt-accent-glow hover:bg-[rgba(255,68,68,0.04)]"
+          style="text-decoration: none;"
+        >
+          <span class="text-crt-green mr-2" style="text-shadow: 0 0 6px rgba(52,211,153,0.4);">$</span>cd /home
+        </a>
+
+        <!-- Waveform decoration -->
+        <div class="flex items-center justify-center gap-[3px] mt-10 h-[16px]">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div
+              class="w-[3px] h-[3px] dead-bar"
+              style={`animation-delay: ${i * 0.12}s;`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .dead-bar {
+    background: #ff4444;
+    animation: dead-wave 2s ease-in-out infinite;
+  }
+
+  @keyframes dead-wave {
+    0%, 100% { height: 3px; opacity: 0.08; }
+    50% { height: 12px; opacity: 0.25; }
+  }
+</style>

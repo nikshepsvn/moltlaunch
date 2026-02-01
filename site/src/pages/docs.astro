@@ -1,0 +1,252 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Footer from '../components/Footer.astro';
+
+const commands = [
+  {
+    name: 'launch',
+    desc: 'deploy an ERC-20 token on base, tradeable on uniswap instantly',
+    flags: [
+      { flag: '--name', type: 'string', default: '—', desc: 'token name (prompted if omitted)' },
+      { flag: '--symbol', type: 'string', default: '—', desc: 'token ticker symbol' },
+      { flag: '--image', type: 'string', default: '—', desc: 'path to token image (png/jpg)' },
+      { flag: '--testnet', type: 'boolean', default: 'false', desc: 'deploy on base sepolia' },
+      { flag: '--json', type: 'boolean', default: 'false', desc: 'output as JSON for agents' },
+    ],
+    example: `$ mltl launch --name "MyToken" --symbol "TKN" --image logo.png
+
+⠋ setting up local wallet...
+✓ wallet created → 0x9f1c...8d3a
+⠋ deploying to base...
+✓ token deployed → 0x7a3b...4f2e
+✓ trading live on uniswap
+✓ earning swap fees
+
+share: https://app.uniswap.org/explore/tokens/base/0x7a3b...4f2e`,
+    hero: true,
+  },
+  {
+    name: 'swap',
+    desc: 'buy and sell tokens on uniswap v4',
+    flags: [
+      { flag: '--token', type: 'string', default: '—', desc: 'token address to trade' },
+      { flag: '--amount', type: 'string', default: '—', desc: 'amount in ETH or token units' },
+      { flag: '--side', type: 'string', default: 'buy', desc: 'buy or sell' },
+      { flag: '--slippage', type: 'string', default: '0.5', desc: 'max slippage percentage' },
+      { flag: '--testnet', type: 'boolean', default: 'false', desc: 'use base sepolia' },
+      { flag: '--json', type: 'boolean', default: 'false', desc: 'output as JSON for agents' },
+    ],
+    example: `$ mltl swap --token 0x7a3b...4f2e --amount 0.01 --side buy
+
+⠋ fetching quote...
+✓ swapping 0.01 ETH → 1,247.83 TKN
+✓ tx confirmed → 0xab12...ef34`,
+  },
+  {
+    name: 'wallet',
+    desc: 'show wallet address and balance',
+    flags: [
+      { flag: '--show-key', type: 'boolean', default: 'false', desc: 'display private key' },
+      { flag: '--json', type: 'boolean', default: 'false', desc: 'output as JSON for agents' },
+    ],
+    example: `$ mltl wallet
+
+address: 0x9f1c...8d3a
+balance: 0.0421 ETH ($128.53)
+chain:   base (8453)`,
+  },
+  {
+    name: 'status',
+    desc: 'list your launched tokens',
+    flags: [
+      { flag: '--testnet', type: 'boolean', default: 'false', desc: 'show testnet tokens' },
+      { flag: '--json', type: 'boolean', default: 'false', desc: 'output as JSON for agents' },
+    ],
+    example: `$ mltl status
+
+┌──────────┬────────┬──────────────┬──────────┐
+│ name     │ symbol │ address      │ fees     │
+├──────────┼────────┼──────────────┼──────────┤
+│ MyToken  │ TKN    │ 0x7a3b...4f2e│ 0.003 ETH│
+│ TestCoin │ TST    │ 0x1c4d...7b8a│ 0.001 ETH│
+└──────────┴────────┴──────────────┴──────────┘`,
+  },
+  {
+    name: 'fees',
+    desc: 'check claimable fee balance',
+    flags: [
+      { flag: '--testnet', type: 'boolean', default: 'false', desc: 'check testnet fees' },
+      { flag: '--json', type: 'boolean', default: 'false', desc: 'output as JSON for agents' },
+    ],
+    example: `$ mltl fees
+
+token: MyToken (TKN)
+claimable: 0.003 ETH ($9.15)
+total earned: 0.012 ETH ($36.60)`,
+  },
+  {
+    name: 'claim',
+    desc: 'withdraw accumulated trading fees',
+    flags: [
+      { flag: '--testnet', type: 'boolean', default: 'false', desc: 'claim from testnet' },
+      { flag: '--json', type: 'boolean', default: 'false', desc: 'output as JSON for agents' },
+    ],
+    example: `$ mltl claim
+
+⠋ claiming fees for MyToken...
+✓ claimed 0.003 ETH → 0x9f1c...8d3a
+✓ tx confirmed → 0xcd56...gh78`,
+  },
+];
+---
+
+<Layout title="MLTL — Documentation">
+  <Sidebar activePage="docs" />
+
+  <main class="md:ml-[216px] h-screen flex flex-col overflow-hidden">
+    <!-- Title bar -->
+    <div class="panel-header justify-between shrink-0">
+      <span class="label">documentation</span>
+      <span class="text-[9px] text-crt-dim opacity-40 tracking-widest">v0.10.0</span>
+    </div>
+
+    <div class="flex-1 flex flex-col min-h-0 overflow-y-auto">
+
+      <!-- Quick Start -->
+      <div class="border-b border-[#1e0606] px-6 py-8">
+        <div class="font-mono text-[12px] text-crt-accent-glow mb-4" style="text-shadow: 0 0 8px rgba(255,68,68,0.4);">quick start</div>
+
+        <div class="doc-terminal border border-[#1e0606] mb-5">
+          <div class="flex items-center gap-2 px-3 py-1.5 border-b border-[#1e0606]">
+            <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+            <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+            <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+            <span class="font-mono text-[8px] text-crt-dim opacity-30 ml-2">terminal</span>
+          </div>
+          <div class="p-4 font-mono text-[11px] leading-[2]">
+            <div class="flex gap-2">
+              <span class="text-crt-green shrink-0" style="text-shadow: 0 0 8px rgba(52,211,153,0.5);">$</span>
+              <span class="text-crt-accent-glow" style="text-shadow: 0 0 6px rgba(255,68,68,0.3);">npx moltlaunch launch --name "MyToken" --symbol "TKN"</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="font-mono text-[10px] leading-[2.2] text-crt-dim">
+          <div class="flex gap-2"><span class="text-crt-accent-dark shrink-0">›</span><span class="opacity-60">auto-creates a wallet on first run (~/.moltlaunch/)</span></div>
+          <div class="flex gap-2"><span class="text-crt-accent-dark shrink-0">›</span><span class="opacity-60">all commands support <span class="text-crt-accent-glow">--json</span> for agent integration</span></div>
+          <div class="flex gap-2"><span class="text-crt-accent-dark shrink-0">›</span><span class="opacity-60">all commands support <span class="text-crt-accent-glow">--testnet</span> for base sepolia</span></div>
+          <div class="flex gap-2"><span class="text-crt-accent-dark shrink-0">›</span><span class="opacity-60">exit codes: 0 = success, 1 = error</span></div>
+        </div>
+      </div>
+
+      <!-- Commands -->
+      {commands.map((cmd) => (
+        <div class:list={["border-b border-[#1e0606] px-6 py-6", cmd.hero && 'cmd-hero']}>
+          <!-- Command header -->
+          <div class="flex items-center gap-3 mb-4">
+            <span class="font-mono text-[14px] text-crt-accent-glow" style="text-shadow: 0 0 8px rgba(255,68,68,0.4);">mltl {cmd.name}</span>
+            <span class="inline-flex items-center gap-1.5 font-mono text-[7px] tracking-[0.2em] uppercase">
+              <span class="w-[5px] h-[5px] rounded-full bg-crt-green" style="box-shadow: 0 0 5px rgba(52,211,153,0.6);"></span>
+              <span class="text-crt-green" style="text-shadow: 0 0 6px rgba(52,211,153,0.3);">live</span>
+            </span>
+          </div>
+
+          <div class="font-mono text-[10px] text-crt-dim opacity-60 mb-5">{cmd.desc}</div>
+
+          <!-- Flags table -->
+          <div class="mb-5 overflow-x-auto">
+            <table class="font-mono text-[9px] w-full border-collapse">
+              <thead>
+                <tr class="text-crt-dim opacity-40 uppercase tracking-widest text-left">
+                  <th class="py-1.5 pr-4">flag</th>
+                  <th class="py-1.5 pr-4">type</th>
+                  <th class="py-1.5 pr-4">default</th>
+                  <th class="py-1.5">description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cmd.flags.map((f) => (
+                  <tr class="border-t border-[#120404]">
+                    <td class="py-1.5 pr-4 text-crt-accent-glow" style="text-shadow: 0 0 4px rgba(255,68,68,0.2);">{f.flag}</td>
+                    <td class="py-1.5 pr-4 text-crt-dim opacity-50">{f.type}</td>
+                    <td class="py-1.5 pr-4 text-crt-dim opacity-40">{f.default}</td>
+                    <td class="py-1.5 text-crt-dim opacity-60">{f.desc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Terminal example -->
+          <div class="doc-terminal border border-[#1e0606]">
+            <div class="flex items-center gap-2 px-3 py-1.5 border-b border-[#1e0606]">
+              <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+              <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+              <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+              <span class="font-mono text-[8px] text-crt-dim opacity-30 ml-2">example</span>
+            </div>
+            <pre class="p-4 font-mono text-[10px] leading-[1.8] text-crt-dim whitespace-pre-wrap">{cmd.example}</pre>
+          </div>
+        </div>
+      ))}
+
+      <!-- Agent Integration -->
+      <div class="px-6 py-8">
+        <div class="font-mono text-[12px] text-crt-accent-glow mb-4" style="text-shadow: 0 0 8px rgba(255,68,68,0.4);">agent integration</div>
+
+        <div class="font-mono text-[10px] leading-[2.2] text-crt-dim mb-5">
+          <div class="flex gap-2"><span class="text-crt-accent-dark shrink-0">›</span><span class="opacity-60">pass <span class="text-crt-accent-glow">--json</span> to any command for machine-readable output</span></div>
+          <div class="flex gap-2"><span class="text-crt-accent-dark shrink-0">›</span><span class="opacity-60">exit code 0 = success, 1 = error</span></div>
+          <div class="flex gap-2"><span class="text-crt-accent-dark shrink-0">›</span><span class="opacity-60">wallet auto-created on first run — no setup required</span></div>
+        </div>
+
+        <!-- Python example -->
+        <div class="doc-terminal border border-[#1e0606] mb-4">
+          <div class="flex items-center gap-2 px-3 py-1.5 border-b border-[#1e0606]">
+            <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+            <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+            <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+            <span class="font-mono text-[8px] text-crt-dim opacity-30 ml-2">python</span>
+          </div>
+          <pre class="p-4 font-mono text-[10px] leading-[1.8] text-crt-dim whitespace-pre-wrap">{`import subprocess, json
+
+result = subprocess.run(
+    ["npx", "moltlaunch", "wallet", "--json"],
+    capture_output=True, text=True
+)
+data = json.loads(result.stdout)
+print(data["address"])`}</pre>
+        </div>
+
+        <!-- Node example -->
+        <div class="doc-terminal border border-[#1e0606]">
+          <div class="flex items-center gap-2 px-3 py-1.5 border-b border-[#1e0606]">
+            <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+            <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+            <span class="w-[6px] h-[6px] rounded-full bg-[#1e0606]"></span>
+            <span class="font-mono text-[8px] text-crt-dim opacity-30 ml-2">node</span>
+          </div>
+          <pre class="p-4 font-mono text-[10px] leading-[1.8] text-crt-dim whitespace-pre-wrap">{`import { execSync } from "child_process";
+
+const raw = execSync("npx moltlaunch fees --json").toString();
+const data = JSON.parse(raw);
+console.log(data.claimable);`}</pre>
+        </div>
+      </div>
+
+    </div>
+
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  .doc-terminal {
+    background: #050101;
+  }
+
+  .cmd-hero {
+    background: linear-gradient(180deg, rgba(255,68,68,0.02) 0%, transparent 100%);
+  }
+</style>

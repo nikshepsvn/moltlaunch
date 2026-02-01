@@ -1,0 +1,151 @@
+/* Base */
+html { background: #000; }
+
+.crt {
+  position: relative;
+  background: #050101;
+  min-height: 100vh;
+}
+
+/* Subtle dot grid texture across the whole page */
+.crt::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(rgba(255,50,50,0.03) 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scanlines — subtle texture */
+.crt-scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Panel header bar — used across all panels */
+.panel-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-bottom: 1px solid #1e0606;
+  background: linear-gradient(180deg, #0c0303 0%, #080202 100%);
+  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.panel-header .label {
+  color: #994444;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.panel-header .label::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: #ff4444;
+  box-shadow: 0 0 4px rgba(255,68,68,0.5);
+}
+
+/* Neon text glow on key elements */
+.stat-value, .token-symbol-text {
+  text-shadow:
+    0 0 8px rgba(255,68,68,0.5),
+    0 0 25px rgba(255,50,50,0.25);
+}
+
+/* Neon glow class */
+.neon-text {
+  text-shadow:
+    0 0 6px rgba(255,68,68,0.5),
+    0 0 18px rgba(255,50,50,0.2);
+}
+
+/* Neon border glow */
+.neon-border {
+  border-color: #3a0c0c;
+  box-shadow: 0 0 8px rgba(255,68,68,0.08);
+}
+
+.neon-border:hover {
+  border-color: #5c1414;
+  box-shadow: 0 0 12px rgba(255,68,68,0.15);
+}
+
+/* Pixel HR */
+.pixel-hr {
+  height: 4px;
+  background: repeating-linear-gradient(90deg, #ef4444 0px, #ef4444 4px, transparent 4px, transparent 8px);
+  margin: 0.5rem 0;
+  image-rendering: pixelated;
+  box-shadow: 0 0 10px rgba(255,68,68,0.3);
+}
+
+/* Status indicator pulse */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-dot {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+/* Border glow for modals */
+@keyframes border-glow {
+  0%   { border-color: #2a0808; box-shadow: 0 0 15px rgba(255,68,68,0.06); }
+  50%  { border-color: #dc2626; box-shadow: 0 0 25px rgba(255,68,68,0.12); }
+  100% { border-color: #2a0808; box-shadow: 0 0 15px rgba(255,68,68,0.06); }
+}
+
+@keyframes panel-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.93); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050101;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a0808;
+  border-radius: 4px;
+  border: 1px solid #3a0c0c;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5c1414;
+}
+
+::-webkit-scrollbar-corner {
+  background: #050101;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2a0808 #050101;
+}
