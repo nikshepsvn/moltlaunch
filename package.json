@@ -1,6 +1,6 @@
 {
   "name": "moltlaunch",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "moltlaunch — the onchain toolkit for agents. Launch tokens, trade markets, pay for APIs, manage wallets.",
   "repository": {
     "type": "git",
