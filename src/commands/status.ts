@@ -3,7 +3,7 @@ import { fetchTokensByOwner } from "../lib/flaunch-api.js";
 import { loadWallet } from "../lib/wallet.js";
 import { CHAIN } from "../lib/config.js";
 import { printError } from "../lib/output.js";
-import { EXIT_CODES, NoWalletError, MoltlaunchError } from "../lib/errors.js";
+import { EXIT_CODES, NoWalletError, MltlError } from "../lib/errors.js";
 import type { Network } from "../types.js";
 
 interface StatusOpts {
@@ -49,7 +49,7 @@ export async function status(opts: StatusOpts): Promise<void> {
       if (json) {
         console.log(JSON.stringify({ success: true, tokens: [], network: chain.name, wallet: walletData.address }));
       } else {
-        console.log("\nNo tokens found. Run `moltlaunch` to launch one.\n");
+        console.log("\nNo tokens found. Run `mltl launch` to create one.\n");
       }
       return;
     }
@@ -92,7 +92,7 @@ export async function status(opts: StatusOpts): Promise<void> {
       console.log();
     }
   } catch (error) {
-    if (error instanceof MoltlaunchError) {
+    if (error instanceof MltlError) {
       printError(error.message, json, error.exitCode);
       process.exit(error.exitCode);
     }

@@ -6,7 +6,7 @@ import { generateTokenLogo } from "../lib/generate-logo.js";
 import { printSuccess, printError } from "../lib/output.js";
 import { announceToken } from "../lib/announce.js";
 import { CHAIN, REVENUE_MANAGER_ADDRESS } from "../lib/config.js";
-import { MoltlaunchError, EXIT_CODES } from "../lib/errors.js";
+import { MltlError, EXIT_CODES } from "../lib/errors.js";
 import type { LaunchParams, Network } from "../types.js";
 
 export async function launch(opts: LaunchParams): Promise<void> {
@@ -79,7 +79,7 @@ export async function launch(opts: LaunchParams): Promise<void> {
     if (!json) console.log(" done");
 
     if (!result.collectionToken?.address || !result.transactionHash) {
-      throw new MoltlaunchError(
+      throw new MltlError(
         "Launch completed but missing token address or transaction hash",
         EXIT_CODES.LAUNCH_FAIL,
       );
@@ -136,7 +136,7 @@ export async function launch(opts: LaunchParams): Promise<void> {
 
     printSuccess("Token launched successfully!", outputData, json);
   } catch (error) {
-    if (error instanceof MoltlaunchError) {
+    if (error instanceof MltlError) {
       printError(error.message, json, error.exitCode);
       process.exit(error.exitCode);
     }

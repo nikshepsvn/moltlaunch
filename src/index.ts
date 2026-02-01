@@ -13,8 +13,8 @@ const { version } = require("../package.json") as { version: string };
 const program = new Command();
 
 program
-  .name("moltlaunch")
-  .description("CLI for AI agents to launch tokens on Base via Flaunch")
+  .name("mltl")
+  .description("moltlaunch — the onchain toolkit for agents")
   .version(version);
 
 // Default command: launch a token

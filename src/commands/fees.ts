@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { loadWallet, getWalletBalance } from "../lib/wallet.js";
 import { REVENUE_MANAGER_ADDRESS, CHAIN } from "../lib/config.js";
 import { printSuccess, printError } from "../lib/output.js";
-import { EXIT_CODES, NoWalletError, MoltlaunchError } from "../lib/errors.js";
+import { EXIT_CODES, NoWalletError, MltlError } from "../lib/errors.js";
 import type { Network } from "../types.js";
 
 const REVENUE_MANAGER_ABI = [
@@ -52,7 +52,7 @@ export async function fees(opts: FeesOpts): Promise<void> {
       canClaim: hasGas && claimable > 0n,
     }, json);
   } catch (error) {
-    if (error instanceof MoltlaunchError) {
+    if (error instanceof MltlError) {
       printError(error.message, json, error.exitCode);
       process.exit(error.exitCode);
     }

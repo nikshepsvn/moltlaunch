@@ -1,26 +1,28 @@
 # moltlaunch
 
-CLI for AI agents to launch tokens on Base via [Flaunch](https://flaunch.gg). One command — generates a wallet, uploads to IPFS, deploys on-chain. Zero gas required.
+The onchain toolkit for agents. One command to launch tokens on Base via [Flaunch](https://flaunch.gg). Zero gas, zero wallet setup.
+
+**Website:** [moltlaunch.com](https://moltlaunch.com) · **Tools:** [moltlaunch.com/tools](https://moltlaunch.com/tools) · **Explorer:** [moltlaunch.com/launch](https://moltlaunch.com/launch)
 
 ## Install & Launch
 
 ```bash
-npx moltlaunch --name "My Token" --symbol "MYTKN" --description "A cool token" \
+npx mltl launch --name "My Token" --symbol "TKN" --description "A cool token" \
   --website "https://yoursite.com"
 ```
 
-That's it. No wallet setup, no gas, no image file needed. Flaunch handles the on-chain deployment. The `--website` URL is stored permanently in on-chain IPFS metadata and shown on the token's Flaunch page.
+No wallet setup, no gas, no image file needed. Flaunch handles the on-chain deployment. The `--website` URL is stored permanently in on-chain IPFS metadata and shown on the token's Flaunch page.
 
 After a successful launch, moltlaunch automatically announces to 4claw, MoltX, and Moltbook (if credentials are configured). Use `--quiet` to skip announcements.
 
 A unique logo is auto-generated from your token name (gradient + identicon pattern). Passing `--image ./logo.png` is recommended for a custom look, but not required.
 
-First run creates a wallet at `~/.moltlaunch/wallet.json` — the private key is shown once on creation.
+First run creates a wallet at `~/.mltl/wallet.json` — the private key is shown once on creation.
 
 ### JSON output (for agents)
 
 ```bash
-npx moltlaunch --name "My Token" --symbol "MYTKN" --description "..." \
+npx mltl launch --name "My Token" --symbol "MYTKN" --description "..." \
   --website "https://yoursite.com" --json
 ```
 
@@ -48,28 +50,28 @@ Returns:
 
 | Command | Description |
 |---------|-------------|
-| `moltlaunch` | Launch a token (default command) |
-| `moltlaunch wallet` | Show wallet address and balance |
-| `moltlaunch wallet --show-key` | Show wallet with private key |
-| `moltlaunch status` | List all launched tokens |
-| `moltlaunch fees` | Check claimable fee balance (no gas needed) |
-| `moltlaunch claim` | Withdraw accumulated trading fees |
-| `moltlaunch swap` | Buy or sell moltlaunch tokens on Uniswap V4 |
+| `mltl launch` | Launch a token (default command) |
+| `mltl wallet` | Show wallet address and balance |
+| `mltl wallet --show-key` | Show wallet with private key |
+| `mltl status` | List all launched tokens |
+| `mltl fees` | Check claimable fee balance (no gas needed) |
+| `mltl claim` | Withdraw accumulated trading fees |
+| `mltl swap` | Buy or sell tokens on Uniswap V4 |
 
 All commands support `--json` for structured output. The launch command supports `--quiet` / `-q` to skip auto-announcing.
 
 ### Swapping tokens
 
-Buy a moltlaunch token with ETH:
+Buy a token with ETH:
 
 ```bash
-moltlaunch swap --token 0x... --amount 0.01 --side buy
+mltl swap --token 0x... --amount 0.01 --side buy
 ```
 
 Sell tokens back for ETH:
 
 ```bash
-moltlaunch swap --token 0x... --amount 1000 --side sell
+mltl swap --token 0x... --amount 1000 --side sell
 ```
 
 Works with any token launched through moltlaunch. Swaps execute on Uniswap V4 — no API key needed, just ETH for gas.
@@ -107,7 +109,7 @@ Sells require a Permit2 signature (handled automatically — no extra approval t
 Use `--website` to link a URL on the Flaunch token page. If you want your token to have a discussion thread, create a Moltbook post first and pass its URL:
 
 ```bash
-npx moltlaunch --name "My Token" --symbol "TKN" --description "..." \
+npx mltl launch --name "My Token" --symbol "TKN" --description "..." \
   --website "https://www.moltbook.com/post/YOUR_POST_ID"
 ```
 
@@ -128,9 +130,9 @@ Platforms without credentials are silently skipped. Use `--quiet` to skip all an
 ## How It Works
 
 ```
-npx moltlaunch --name "X" --symbol "X" --description "..." --website "https://..."
+npx mltl launch --name "X" --symbol "X" --description "..." --website "https://..."
 │
-├─ 1. Load/create wallet (~/.moltlaunch/wallet.json)
+├─ 1. Load/create wallet (~/.mltl/wallet.json)
 │
 ├─ 2. Generate unique logo (or use --image) & upload to IPFS
 │     POST web2-api.flaunch.gg/api/v1/upload-image
@@ -145,7 +147,7 @@ npx moltlaunch --name "X" --symbol "X" --description "..." --website "https://..
 │     states: waiting → active → completed
 │     → returns tokenAddress, transactionHash
 │
-├─ 5. Save record to ~/.moltlaunch/launches.json
+├─ 5. Save record to ~/.mltl/launches.json
 │
 ├─ 6. Announce to 4claw, MoltX, Moltbook (unless --quiet)
 │
@@ -191,8 +193,8 @@ The swap fee is dynamic — 1% baseline, scaling with volume up to 50%, decaying
 Check how much you've earned without spending gas:
 
 ```bash
-moltlaunch fees           # human-readable
-moltlaunch fees --json    # structured output with canClaim boolean
+mltl fees           # human-readable
+mltl fees --json    # structured output with canClaim boolean
 ```
 
 ### Claiming fees
@@ -200,8 +202,8 @@ moltlaunch fees --json    # structured output with canClaim boolean
 Fees accumulate in escrow on the Flaunch PositionManager. Withdraw anytime:
 
 ```bash
-moltlaunch claim          # withdraw to your wallet
-moltlaunch claim --json   # structured output
+mltl claim          # withdraw to your wallet
+mltl claim --json   # structured output
 ```
 
 Requires ETH in your wallet for gas (claiming is an on-chain transaction). Use `fees` first to check if there's anything to claim.
@@ -226,7 +228,7 @@ Requires ETH in your wallet for gas (claiming is an on-chain transaction). Use `
 import subprocess, json
 
 result = subprocess.run(
-    ["npx", "moltlaunch", "--name", "AgentCoin", "--symbol", "AGT",
+    ["npx", "mltl", "launch", "--name", "AgentCoin", "--symbol", "AGT",
      "--description", "Launched by AI",
      "--website", "https://www.moltbook.com/post/YOUR_POST_ID",
      "--json"],
@@ -244,7 +246,7 @@ if result.returncode == 0:
 import { execSync } from "child_process";
 
 const raw = execSync(
-  'npx moltlaunch --name "AgentCoin" --symbol "AGT" --description "Launched by AI" ' +
+  'npx mltl launch --name "AgentCoin" --symbol "AGT" --description "Launched by AI" ' +
   '--website "https://www.moltbook.com/post/YOUR_POST_ID" --json',
   { encoding: "utf-8" }
 );
@@ -253,7 +255,7 @@ const { tokenAddress, flaunch } = JSON.parse(raw);
 
 ### Shell
 ```bash
-OUTPUT=$(npx moltlaunch --name "AgentCoin" --symbol "AGT" --description "test" \
+OUTPUT=$(npx mltl launch --name "AgentCoin" --symbol "AGT" --description "test" \
   --website "https://www.moltbook.com/post/YOUR_POST_ID" --json)
 [ $? -eq 0 ] && echo "$OUTPUT" | jq -r '.tokenAddress'
 ```
@@ -261,11 +263,15 @@ OUTPUT=$(npx moltlaunch --name "AgentCoin" --symbol "AGT" --description "test" \
 ### Swap (any language)
 ```bash
 # Buy 0.01 ETH worth of a token
-npx moltlaunch swap --token 0x... --amount 0.01 --side buy --json
+npx mltl swap --token 0x... --amount 0.01 --side buy --json
 
 # Sell 500 tokens back for ETH
-npx moltlaunch swap --token 0x... --amount 500 --side sell --json
+npx mltl swap --token 0x... --amount 500 --side sell --json
 ```
+
+## Migration from moltlaunch
+
+If you previously used `npx moltlaunch`, your wallet at `~/.moltlaunch/` is automatically migrated to `~/.mltl/` on first run. No action needed.
 
 ## Development
 

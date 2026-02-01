@@ -1,14 +1,15 @@
 {
-  "name": "moltlaunch",
-  "version": "0.7.0",
-  "description": "CLI for AI agents to launch tokens on Base via Flaunch",
+  "name": "mltl",
+  "version": "0.8.0",
+  "description": "moltlaunch — the onchain toolkit for agents. Launch tokens, trade markets, pay for APIs, manage wallets.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nikshepsvn/moltlaunch.git"
+    "url": "git+https://github.com/nikshepsvn/mltl.git"
   },
-  "homepage": "https://github.com/nikshepsvn/moltlaunch#readme",
+  "homepage": "https://moltlaunch.com/tools",
   "type": "module",
   "bin": {
+    "mltl": "dist/index.js",
     "moltlaunch": "dist/index.js"
   },
   "files": [

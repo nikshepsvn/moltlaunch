@@ -9,47 +9,47 @@ export const EXIT_CODES = {
   SWAP_FAIL: 7,
 } as const;
 
-export class MoltlaunchError extends Error {
+export class MltlError extends Error {
   constructor(
     message: string,
     public readonly exitCode: number,
   ) {
     super(message);
-    this.name = "MoltlaunchError";
+    this.name = "MltlError";
   }
 }
 
-export class NoWalletError extends MoltlaunchError {
+export class NoWalletError extends MltlError {
   constructor() {
-    super("No wallet found. Run `moltlaunch` to create one.", EXIT_CODES.NO_WALLET);
+    super("No wallet found. Run `mltl launch` to create one.", EXIT_CODES.NO_WALLET);
   }
 }
 
-export class UploadError extends MoltlaunchError {
+export class UploadError extends MltlError {
   constructor(detail: string) {
     super(`Image upload failed: ${detail}`, EXIT_CODES.UPLOAD_FAIL);
   }
 }
 
-export class LaunchError extends MoltlaunchError {
+export class LaunchError extends MltlError {
   constructor(detail: string) {
     super(`Token launch failed: ${detail}`, EXIT_CODES.LAUNCH_FAIL);
   }
 }
 
-export class TimeoutError extends MoltlaunchError {
+export class TimeoutError extends MltlError {
   constructor() {
     super("Launch timed out waiting for confirmation.", EXIT_CODES.TIMEOUT);
   }
 }
 
-export class SwapError extends MoltlaunchError {
+export class SwapError extends MltlError {
   constructor(detail: string) {
     super(`Swap failed: ${detail}`, EXIT_CODES.SWAP_FAIL);
   }
 }
 
-export class NoGasError extends MoltlaunchError {
+export class NoGasError extends MltlError {
   constructor(address: string) {
     super(
       `Wallet ${address} has no ETH for gas. Send Base ETH to this address and retry.`,

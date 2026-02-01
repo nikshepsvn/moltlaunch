@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { loadWallet, getSigner, getWalletBalance } from "../lib/wallet.js";
 import { REVENUE_MANAGER_ADDRESS } from "../lib/config.js";
 import { printSuccess, printError } from "../lib/output.js";
-import { EXIT_CODES, NoWalletError, NoGasError, MoltlaunchError } from "../lib/errors.js";
+import { EXIT_CODES, NoWalletError, NoGasError, MltlError } from "../lib/errors.js";
 import type { Network } from "../types.js";
 
 // Fees accumulate in FeeEscrow, claimed via the Revenue Manager
@@ -58,7 +58,7 @@ export async function claim(opts: ClaimOpts): Promise<void> {
     if (!json) process.stdout.write("Waiting for confirmation...");
     const receipt = await tx.wait();
     if (!receipt) {
-      throw new MoltlaunchError("Transaction was dropped or replaced", EXIT_CODES.GENERAL);
+      throw new MltlError("Transaction was dropped or replaced", EXIT_CODES.GENERAL);
     }
     if (!json) console.log(" confirmed");
 
@@ -69,7 +69,7 @@ export async function claim(opts: ClaimOpts): Promise<void> {
       network,
     }, json);
   } catch (error) {
-    if (error instanceof MoltlaunchError) {
+    if (error instanceof MltlError) {
       printError(error.message, json, error.exitCode);
       process.exit(error.exitCode);
     }

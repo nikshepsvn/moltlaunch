@@ -3,7 +3,7 @@ import { loadWallet, getWalletBalance } from "../lib/wallet.js";
 import { createFlaunchSdk } from "../lib/viem-client.js";
 import { CHAIN, DEFAULT_SLIPPAGE_PERCENT } from "../lib/config.js";
 import { printSuccess, printError } from "../lib/output.js";
-import { EXIT_CODES, NoWalletError, NoGasError, SwapError, MoltlaunchError } from "../lib/errors.js";
+import { EXIT_CODES, NoWalletError, NoGasError, SwapError, MltlError } from "../lib/errors.js";
 import type { SwapParams, Network } from "../types.js";
 
 export async function swap(opts: SwapParams): Promise<void> {
@@ -87,7 +87,7 @@ export async function swap(opts: SwapParams): Promise<void> {
       flaunch: `${chainConfig.flaunchUrl}/coin/${token}`,
     }, json);
   } catch (error) {
-    if (error instanceof MoltlaunchError) {
+    if (error instanceof MltlError) {
       printError(error.message, json, error.exitCode);
       process.exit(error.exitCode);
     }

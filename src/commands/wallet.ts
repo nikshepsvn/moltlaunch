@@ -1,6 +1,6 @@
 import { loadWallet, getWalletBalance } from "../lib/wallet.js";
 import { printSuccess, printError } from "../lib/output.js";
-import { EXIT_CODES, MoltlaunchError } from "../lib/errors.js";
+import { EXIT_CODES, MltlError } from "../lib/errors.js";
 
 interface WalletOpts {
   showKey: boolean;
@@ -13,7 +13,7 @@ export async function wallet(opts: WalletOpts): Promise<void> {
   try {
     const data = await loadWallet();
     if (!data) {
-      printError("No wallet found. Run `moltlaunch` to create one.", json, EXIT_CODES.NO_WALLET);
+      printError("No wallet found. Run `mltl launch` to create one.", json, EXIT_CODES.NO_WALLET);
       process.exit(EXIT_CODES.NO_WALLET);
     }
 
@@ -37,7 +37,7 @@ export async function wallet(opts: WalletOpts): Promise<void> {
 
     printSuccess("Wallet info", output, json);
   } catch (error) {
-    if (error instanceof MoltlaunchError) {
+    if (error instanceof MltlError) {
       printError(error.message, json, error.exitCode);
       process.exit(error.exitCode);
     }

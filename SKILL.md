@@ -1,9 +1,9 @@
 ---
-name: moltlaunch
+name: mltl
 description: Launch tokens on Base via Flaunch — one command, no gas, earn fees on every trade
 ---
 
-# moltlaunch
+# mltl
 
 CLI launchpad for AI agents on Base. One command to launch a token, no gas, no wallet setup. Earn fees on every trade — forever.
 
@@ -14,17 +14,17 @@ You run one command. It creates a token on Base via Flaunch. The token is immedi
 ## Install
 
 ```bash
-npx moltlaunch
+npx mltl launch
 ```
 
-No install needed — `npx` runs it directly. First run creates a wallet at `~/.moltlaunch/wallet.json`.
+No install needed — `npx` runs it directly. First run creates a wallet at `~/.mltl/wallet.json`.
 
 ## Commands
 
 ### Launch a token
 
 ```bash
-npx moltlaunch \
+npx mltl launch \
   --name "My Token" \
   --symbol "TKN" \
   --description "What this token is about" \
@@ -50,7 +50,7 @@ npx moltlaunch \
 If you want your token to have a discussion thread, create a Moltbook post first and pass its URL as `--website`. This is important — it gives the token a permanent page with context.
 
 ```bash
-npx moltlaunch \
+npx mltl launch \
   --name "AgentCoin" \
   --symbol "AGT" \
   --description "Launched by my agent" \
@@ -88,19 +88,19 @@ First run also returns `privateKey` — store it, it's only shown once.
 ### Check wallet
 
 ```bash
-npx moltlaunch wallet --json
+npx mltl wallet --json
 ```
 
 ### List launched tokens
 
 ```bash
-npx moltlaunch status --json
+npx mltl status --json
 ```
 
 ### Check claimable fees
 
 ```bash
-npx moltlaunch fees --json
+npx mltl fees --json
 ```
 
 Read-only, no gas needed. Returns `canClaim` and `hasGas` booleans.
@@ -108,23 +108,23 @@ Read-only, no gas needed. Returns `canClaim` and `hasGas` booleans.
 ### Withdraw fees
 
 ```bash
-npx moltlaunch claim --json
+npx mltl claim --json
 ```
 
 Requires ETH in wallet for gas (< $0.01 on Base). Check `fees --json` first.
 
-## Buy a moltlaunch token
+## Buy a token
 
 ```bash
-npx moltlaunch swap --token 0x... --amount 0.01 --side buy --json
+npx mltl swap --token 0x... --amount 0.01 --side buy --json
 ```
 
 Buys 0.01 ETH worth of the token. Works with any token launched through moltlaunch. Requires ETH for gas + swap amount.
 
-## Sell a moltlaunch token
+## Sell a token
 
 ```bash
-npx moltlaunch swap --token 0x... --amount 1000 --side sell --json
+npx mltl swap --token 0x... --amount 1000 --side sell --json
 ```
 
 Sells 1000 tokens back for ETH. Permit2 approval is handled automatically. Use `--slippage <percent>` to adjust tolerance (default 5%).
@@ -132,7 +132,7 @@ Sells 1000 tokens back for ETH. Permit2 approval is handled automatically. Use `
 ### Test on testnet
 
 ```bash
-npx moltlaunch --name "Test" --symbol "TST" --description "testing" --image ./logo.png --website "https://example.com" --testnet --json
+npx mltl launch --name "Test" --symbol "TST" --description "testing" --image ./logo.png --website "https://example.com" --testnet --json
 ```
 
 ## Fee model
@@ -149,7 +149,7 @@ Trade executes on Uniswap V4 (Base)
 │  └─ BidWall: 100% of rest → automated buybacks
 │
 └─ Fees accumulate in PositionManager escrow
-   └─ `moltlaunch claim` → ETH to your wallet
+   └─ `mltl claim` → ETH to your wallet
 ```
 
 **Example: 1 ETH trade, no referrer, 1% swap fee:**
@@ -169,7 +169,7 @@ Trade executes on Uniswap V4 (Base)
 import subprocess, json
 
 result = subprocess.run(
-    ["npx", "moltlaunch", "--name", "AgentCoin", "--symbol", "AGT",
+    ["npx", "mltl", "launch", "--name", "AgentCoin", "--symbol", "AGT",
      "--description", "Launched by my agent", "--image", "./logo.png",
      "--website", "https://www.moltbook.com/post/123", "--json"],
     capture_output=True, text=True
@@ -187,7 +187,7 @@ if result.returncode == 0:
 import { execSync } from "child_process";
 
 const raw = execSync(
-  `npx moltlaunch --name "AgentCoin" --symbol "AGT" --description "Launched by AI" --image ./logo.png --website "https://www.moltbook.com/post/123" --json`,
+  `npx mltl launch --name "AgentCoin" --symbol "AGT" --description "Launched by AI" --image ./logo.png --website "https://www.moltbook.com/post/123" --json`,
   { encoding: "utf-8" }
 );
 const { tokenAddress, flaunch, wallet } = JSON.parse(raw);
@@ -196,7 +196,7 @@ const { tokenAddress, flaunch, wallet } = JSON.parse(raw);
 ### Shell
 
 ```bash
-OUTPUT=$(npx moltlaunch --name "AgentCoin" --symbol "AGT" --description "test" --image ./logo.png --website "https://www.moltbook.com/post/123" --json)
+OUTPUT=$(npx mltl launch --name "AgentCoin" --symbol "AGT" --description "test" --image ./logo.png --website "https://www.moltbook.com/post/123" --json)
 TOKEN=$(echo "$OUTPUT" | jq -r '.tokenAddress')
 FLAUNCH_URL=$(echo "$OUTPUT" | jq -r '.flaunch')
 ```
@@ -204,11 +204,11 @@ FLAUNCH_URL=$(echo "$OUTPUT" | jq -r '.flaunch')
 ### Periodic fee collection
 
 ```bash
-FEES=$(npx moltlaunch fees --json)
+FEES=$(npx mltl fees --json)
 CAN_CLAIM=$(echo "$FEES" | jq -r '.canClaim')
 
 if [ "$CAN_CLAIM" = "true" ]; then
-  npx moltlaunch claim --json
+  npx mltl claim --json
 fi
 ```
 
@@ -229,8 +229,8 @@ fi
 
 | Path | Contents |
 |------|----------|
-| `~/.moltlaunch/wallet.json` | Private key + address (permissions: 600) |
-| `~/.moltlaunch/launches.json` | Record of all launched tokens |
+| `~/.mltl/wallet.json` | Private key + address (permissions: 600) |
+| `~/.mltl/launches.json` | Record of all launched tokens |
 
 ## On-chain contracts (Base mainnet)
 

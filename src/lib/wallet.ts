@@ -2,11 +2,27 @@ import { ethers } from "ethers";
 import { readFile, writeFile, mkdir, chmod, access } from "node:fs/promises";
 import { join } from "node:path";
 import { homedir } from "node:os";
-import { WALLET_DIR, WALLET_FILE, LAUNCHES_FILE, CHAIN } from "./config.js";
+import { WALLET_DIR, LEGACY_WALLET_DIR, WALLET_FILE, LAUNCHES_FILE, CHAIN } from "./config.js";
 import type { WalletData, LaunchRecord, Network } from "../types.js";
 
 function getWalletDir(): string {
   return join(homedir(), WALLET_DIR);
+}
+
+function getLegacyWalletDir(): string {
+  return join(homedir(), LEGACY_WALLET_DIR);
+}
+
+// Migrate from ~/.moltlaunch to ~/.mltl if legacy dir exists and new dir doesn't
+async function migrateIfNeeded(): Promise<void> {
+  const newDir = getWalletDir();
+  const legacyDir = getLegacyWalletDir();
+
+  if (await fileExists(newDir)) return;
+  if (!(await fileExists(legacyDir))) return;
+
+  const { rename } = await import("node:fs/promises");
+  await rename(legacyDir, newDir);
 }
 
 function getWalletPath(): string {
@@ -31,6 +47,7 @@ export async function walletExists(): Promise<boolean> {
 }
 
 export async function loadWallet(): Promise<WalletData | null> {
+  await migrateIfNeeded();
   const path = getWalletPath();
   if (!(await fileExists(path))) return null;
 
@@ -58,6 +75,7 @@ export async function createWallet(): Promise<WalletData> {
 }
 
 export async function loadOrCreateWallet(): Promise<{ wallet: WalletData; isNew: boolean }> {
+  await migrateIfNeeded();
   const existing = await loadWallet();
   if (existing) return { wallet: existing, isNew: false };
 
