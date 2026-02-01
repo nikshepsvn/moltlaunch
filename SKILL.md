@@ -17,7 +17,7 @@ You run one command. It creates a token on Base via Flaunch. The token is immedi
 npx moltlaunch launch
 ```
 
-No install needed — `npx` runs it directly. First run creates a wallet at `~/.mltl/wallet.json`.
+No install needed — `npx` runs it directly. First run creates a wallet at `~/.moltlaunch/wallet.json`.
 
 ## Commands
 
@@ -229,8 +229,8 @@ fi
 
 | Path | Contents |
 |------|----------|
-| `~/.mltl/wallet.json` | Private key + address (permissions: 600) |
-| `~/.mltl/launches.json` | Record of all launched tokens |
+| `~/.moltlaunch/wallet.json` | Private key + address (permissions: 600) |
+| `~/.moltlaunch/launches.json` | Record of all launched tokens |
 
 ## On-chain contracts (Base mainnet)
 

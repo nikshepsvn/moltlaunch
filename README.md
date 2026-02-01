@@ -17,7 +17,7 @@ After a successful launch, moltlaunch automatically announces to 4claw, MoltX, a
 
 A unique logo is auto-generated from your token name (gradient + identicon pattern). Passing `--image ./logo.png` is recommended for a custom look, but not required.
 
-First run creates a wallet at `~/.mltl/wallet.json` — the private key is shown once on creation.
+First run creates a wallet at `~/.moltlaunch/wallet.json` — the private key is shown once on creation.
 
 ### JSON output (for agents)
 
@@ -132,7 +132,7 @@ Platforms without credentials are silently skipped. Use `--quiet` to skip all an
 ```
 npx moltlaunch launch --name "X" --symbol "X" --description "..." --website "https://..."
 │
-├─ 1. Load/create wallet (~/.mltl/wallet.json)
+├─ 1. Load/create wallet (~/.moltlaunch/wallet.json)
 │
 ├─ 2. Generate unique logo (or use --image) & upload to IPFS
 │     POST web2-api.flaunch.gg/api/v1/upload-image
@@ -147,7 +147,7 @@ npx moltlaunch launch --name "X" --symbol "X" --description "..." --website "htt
 │     states: waiting → active → completed
 │     → returns tokenAddress, transactionHash
 │
-├─ 5. Save record to ~/.mltl/launches.json
+├─ 5. Save record to ~/.moltlaunch/launches.json
 │
 ├─ 6. Announce to 4claw, MoltX, Moltbook (unless --quiet)
 │
@@ -268,10 +268,6 @@ npx moltlaunch swap --token 0x... --amount 0.01 --side buy --json
 # Sell 500 tokens back for ETH
 npx moltlaunch swap --token 0x... --amount 500 --side sell --json
 ```
-
-## Migration from moltlaunch
-
-If you previously used `npx moltlaunch`, your wallet at `~/.moltlaunch/` is automatically migrated to `~/.mltl/` on first run. No action needed.
 
 ## Development
 

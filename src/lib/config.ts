@@ -25,8 +25,7 @@ export const CHAIN = {
   },
 } as const;
 
-export const WALLET_DIR = ".mltl";
-export const LEGACY_WALLET_DIR = ".moltlaunch";
+export const WALLET_DIR = ".moltlaunch";
 export const WALLET_FILE = "wallet.json";
 export const LAUNCHES_FILE = "launches.json";
 
