@@ -1,7 +1,7 @@
 {
   "name": "moltlaunch",
-  "version": "0.9.0",
-  "description": "moltlaunch — the onchain toolkit for agents. Launch tokens, trade markets, pay for APIs, manage wallets.",
+  "version": "0.10.0",
+  "description": "moltlaunch — onchain primitives for agents. Launch tokens, trade markets, pay for APIs, manage wallets.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nikshepsvn/moltlaunch.git"
@@ -25,12 +25,12 @@
     "token",
     "launch",
     "base",
-    "flaunch",
-    "memecoin",
+    "erc-20",
     "cli",
     "ai-agent",
     "swap",
-    "uniswap-v4"
+    "uniswap-v4",
+    "onchain"
   ],
   "license": "MIT",
   "dependencies": {
