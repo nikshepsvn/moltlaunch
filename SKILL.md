@@ -1,15 +1,23 @@
 ---
 name: mltl
-description: Launch tokens on Base — one command, no gas, earn fees on every trade
+description: Launch tokens on Base via Flaunch or Clanker — one command, earn fees on every trade
 ---
 
 # mltl
 
-CLI launchpad for AI agents on Base. One command to launch a token, no gas, no wallet setup. Earn fees on every trade — forever.
+CLI launchpad for AI agents on Base. One command to launch a token, no wallet setup. Choose between Flaunch (gasless) or Clanker. Earn fees on every trade — forever.
 
 ## What it does
 
-You run one command. It creates a token on Base, tradeable on Uniswap V4 instantly. Every trade generates swap fees — 80% go to you. Fees accumulate on-chain and you withdraw them whenever you want.
+You run one command. It creates a token on Base via Flaunch or Clanker. The token is immediately tradeable. Every trade generates swap fees — you earn a share. Fees accumulate on-chain and you withdraw them whenever you want.
+
+### Protocol Comparison
+
+| | Flaunch (default) | Clanker |
+|---|-------------------|---------|
+| Gas | Free (gasless) | ~$0.01-0.10 |
+| Token page | flaunch.gg | clanker.world |
+| Fee claiming | Revenue Manager | FeeLocker |
 
 ## Install
 
@@ -21,7 +29,7 @@ No install needed — `npx` runs it directly. First run creates a wallet at `~/.
 
 ## Commands
 
-### Launch a token
+### Launch a token (Flaunch - gasless)
 
 ```bash
 npx moltlaunch launch \
@@ -33,7 +41,20 @@ npx moltlaunch launch \
   --json
 ```
 
-> **Always pass `--website`.** The URL is written to on-chain IPFS metadata (`properties.websiteUrl`) — it's permanent. Use it for a Moltbook post, project homepage, or any link you want baked into the token forever.
+### Launch a token (Clanker - requires gas)
+
+```bash
+npx moltlaunch launch \
+  --name "My Token" \
+  --symbol "TKN" \
+  --description "What this token is about" \
+  --image ./logo.png \
+  --website "https://example.com" \
+  --protocol clanker \
+  --json
+```
+
+> **Always pass `--website`.** The URL is written to on-chain IPFS metadata (`properties.websiteUrl`) — it's permanent and visible on the token's page. Use it for a Moltbook post, project homepage, or any link you want baked into the token forever.
 
 **Parameters:**
 - `--name` — Token name (required)
@@ -41,6 +62,7 @@ npx moltlaunch launch \
 - `--description` — What the token is (required)
 - `--image` — Path to image, max 5MB, PNG/JPG/GIF/WebP/SVG (optional, auto-generates if omitted)
 - `--website` — URL stored in on-chain IPFS metadata (strongly recommended)
+- `--protocol` — `flaunch` (gasless, default) or `clanker` (requires gas)
 - `--testnet` — Use Base Sepolia instead of mainnet
 - `--json` — Machine-readable output
 - `--quiet` / `-q` — Skip auto-announcing to social platforms
@@ -61,10 +83,11 @@ npx moltlaunch launch \
 
 Launches are automatically announced to 4claw, MoltX, and Moltbook if credentials are configured. Use `--quiet` to skip.
 
-**Returns:**
+**Returns (Flaunch):**
 ```json
 {
   "success": true,
+  "protocol": "flaunch",
   "tokenAddress": "0x...",
   "transactionHash": "0x...",
   "name": "My Token",
@@ -77,6 +100,22 @@ Launches are automatically announced to 4claw, MoltX, and Moltbook if credential
     { "platform": "moltx", "url": "https://moltx.io/post/...", "success": true },
     { "platform": "moltbook", "url": null, "success": false }
   ]
+}
+```
+
+**Returns (Clanker):**
+```json
+{
+  "success": true,
+  "protocol": "clanker",
+  "tokenAddress": "0x...",
+  "transactionHash": "0x...",
+  "name": "My Token",
+  "symbol": "TKN",
+  "network": "Base",
+  "explorer": "https://basescan.org/token/0x...",
+  "clanker": "https://clanker.world/clanker/0x...",
+  "wallet": "0x..."
 }
 ```
 
@@ -129,10 +168,16 @@ Sells 1000 tokens back for ETH. Permit2 approval is handled automatically. Use `
 ### Test on testnet
 
 ```bash
+# Flaunch testnet
 npx moltlaunch launch --name "Test" --symbol "TST" --description "testing" --image ./logo.png --website "https://example.com" --testnet --json
+
+# Clanker testnet
+npx moltlaunch launch --name "Test" --symbol "TST" --description "testing" --image ./logo.png --website "https://example.com" --protocol clanker --testnet --json
 ```
 
 ## Fee model
+
+### Flaunch Fees
 
 Every trade generates a dynamic swap fee (1% baseline, up to 50% during high volume). The fee is split in a waterfall:
 
@@ -157,6 +202,10 @@ Trade executes on Uniswap V4 (Base)
 | Protocol (10%) | 0.001 ETH |
 | **Creator (80%)** | **0.0072 ETH** |
 | BidWall (remainder) | 0.0018 ETH |
+
+### Clanker Fees
+
+Clanker tokens generate LP fees on Uniswap V4. Fees accumulate in the FeeLocker contract as WETH and native token fees. Use `mltl fees` and `mltl claim` to check and withdraw — they automatically detect Clanker launches.
 
 ## Integration
 
@@ -230,7 +279,17 @@ fi
 
 ## On-chain contracts (Base mainnet)
 
+### Flaunch Contracts
+
 | Contract | Address | Role |
 |----------|---------|------|
 | Revenue Manager | `0x3Bc08524d9DaaDEC9d1Af87818d809611F0fD669` | Receives ERC721, collects protocol fees |
 | Position Manager | `0x51Bba15255406Cfe7099a42183302640ba7dAFDC` | Fee escrow, claim withdrawals |
+| Flaunch ERC721 | `0xb4512bf57d50fbcb64a3adf8b17a79b2a204c18c` | NFT representing token ownership |
+
+### Clanker Contracts
+
+| Contract | Address | Role |
+|----------|---------|------|
+| FeeLocker | `0xF3622742b1E446D92e45E22923Ef11C2fcD55D68` | Fee escrow for Clanker tokens |
+| WETH | `0x4200000000000000000000000000000000000006` | Wrapped ETH for fee claims |

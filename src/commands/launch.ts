@@ -2,17 +2,22 @@ import { resolve } from "node:path";
 import { access } from "node:fs/promises";
 import { loadOrCreateWallet, saveLaunchRecord } from "../lib/wallet.js";
 import { uploadImage, launchMemecoin, pollLaunchStatus } from "../lib/flaunch-api.js";
+import { launchViaClanker } from "../lib/clanker.js";
 import { generateTokenLogo } from "../lib/generate-logo.js";
 import { printSuccess, printError } from "../lib/output.js";
 import { announceToken } from "../lib/announce.js";
 import { CHAIN, REVENUE_MANAGER_ADDRESS } from "../lib/config.js";
 import { MltlError, EXIT_CODES } from "../lib/errors.js";
-import type { LaunchParams, Network } from "../types.js";
+import type { LaunchParams, Network, LaunchRecord } from "../types.js";
 
 export async function launch(opts: LaunchParams): Promise<void> {
-  const { name, symbol, description, website, testnet, json, quiet } = opts;
+  const { name, symbol, description, website, testnet, json, quiet, protocol } = opts;
   const network: Network = testnet ? "testnet" : "mainnet";
   const chain = testnet ? CHAIN.testnet : CHAIN.mainnet;
+
+  if (!json && protocol === "clanker") {
+    console.log("Using Clanker protocol (requires gas)");
+  }
 
   try {
     // Resolve image: use provided path or generate a unique one
@@ -50,80 +55,108 @@ export async function launch(opts: LaunchParams): Promise<void> {
     const imageIpfs = await uploadImage(imageSource);
     if (!json) console.log(` ${imageIpfs.slice(0, 16)}...`);
 
-    // Step 3: Submit gasless launch (on-chain tx handled server-side)
-    if (!json) process.stdout.write("Submitting launch...");
+    let tokenAddress: string;
+    let transactionHash: string;
+    let flaunchUrl: string;
+    let clankerUrl: string | undefined;
 
-    const jobId = await launchMemecoin({
-      name,
-      symbol,
-      description,
-      imageIpfs,
-      creatorAddress: wallet.address,
-      revenueManagerAddress: REVENUE_MANAGER_ADDRESS,
-      websiteUrl: website,
-      network,
-    });
-    if (!json) console.log(` queued (job ${jobId})`);
+    if (protocol === "clanker") {
+      // Clanker launch flow (requires gas)
+      if (!json) process.stdout.write("Deploying via Clanker...");
 
-    // Step 4: Poll for completion
-    if (!json) process.stdout.write("Deploying on-chain");
-    const result = await pollLaunchStatus(jobId, (state, position) => {
-      if (!json) {
-        if (position > 0) {
-          process.stdout.write(` [queue: ${position}]`);
-        } else {
-          process.stdout.write(".");
+      const clankerResult = await launchViaClanker({
+        name,
+        symbol,
+        description,
+        imageUrl: `https://ipfs.io/ipfs/${imageIpfs}`,
+        privateKey: wallet.privateKey,
+        websiteUrl: website,
+        network,
+      });
+
+      if (!json) console.log(" done");
+
+      tokenAddress = clankerResult.tokenAddress;
+      transactionHash = clankerResult.txHash;
+      clankerUrl = clankerResult.clankerUrl;
+      flaunchUrl = ""; // Not applicable for Clanker
+    } else {
+      // Flaunch launch flow (gasless)
+      if (!json) process.stdout.write("Submitting launch...");
+
+      const jobId = await launchMemecoin({
+        name,
+        symbol,
+        description,
+        imageIpfs,
+        creatorAddress: wallet.address,
+        revenueManagerAddress: REVENUE_MANAGER_ADDRESS,
+        websiteUrl: website,
+        network,
+      });
+      if (!json) console.log(` queued (job ${jobId})`);
+
+      // Poll for completion
+      if (!json) process.stdout.write("Deploying on-chain");
+      const result = await pollLaunchStatus(jobId, (state, position) => {
+        if (!json) {
+          if (position > 0) {
+            process.stdout.write(` [queue: ${position}]`);
+          } else {
+            process.stdout.write(".");
+          }
         }
-      }
-    });
-    if (!json) console.log(" done");
+      });
+      if (!json) console.log(" done");
 
-    if (!result.collectionToken?.address || !result.transactionHash) {
-      throw new MltlError(
-        "Launch completed but missing token address or transaction hash",
-        EXIT_CODES.LAUNCH_FAIL,
-      );
+      if (!result.collectionToken?.address || !result.transactionHash) {
+        throw new MltlError(
+          "Launch completed but missing token address or transaction hash",
+          EXIT_CODES.LAUNCH_FAIL,
+        );
+      }
+
+      tokenAddress = result.collectionToken.address;
+      transactionHash = result.transactionHash;
+      flaunchUrl = `${chain.flaunchUrl}/coin/${tokenAddress}`;
     }
 
-    const tokenAddress = result.collectionToken.address;
-    const flaunchUrl = `${chain.flaunchUrl}/coin/${tokenAddress}`;
-
     // Step 5: Save launch record
-    await saveLaunchRecord({
+    const launchRecord: LaunchRecord = {
       name,
       symbol,
       tokenAddress,
-      transactionHash: result.transactionHash,
+      transactionHash,
       network,
       walletAddress: wallet.address,
       launchedAt: new Date().toISOString(),
       flaunchUrl,
-    });
+      protocol,
+      clankerUrl,
+    };
+    await saveLaunchRecord(launchRecord);
 
     // Step 6: Announce to social platforms (unless --quiet)
-    const launchRecord = {
-      name,
-      symbol,
-      tokenAddress,
-      transactionHash: result.transactionHash,
-      network,
-      walletAddress: wallet.address,
-      launchedAt: new Date().toISOString(),
-      flaunchUrl,
-    };
     const announcements = await announceToken(launchRecord, { quiet: !!quiet, json });
 
     // Output result
     const outputData: Record<string, unknown> = {
+      protocol,
       tokenAddress,
-      transactionHash: result.transactionHash,
+      transactionHash,
       name,
       symbol,
       network: chain.name,
       explorer: `${chain.explorer}/token/${tokenAddress}`,
-      flaunch: flaunchUrl,
       wallet: wallet.address,
     };
+
+    // Add protocol-specific URLs
+    if (protocol === "clanker" && clankerUrl) {
+      outputData.clanker = clankerUrl;
+    } else {
+      outputData.flaunch = flaunchUrl;
+    }
 
     if (announcements.length > 0) {
       outputData.announcements = announcements;

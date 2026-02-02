@@ -1,3 +1,5 @@
+export type Protocol = "flaunch" | "clanker";
+
 export interface WalletData {
   address: string;
   privateKey: string;
@@ -13,6 +15,8 @@ export interface LaunchRecord {
   walletAddress: string;
   launchedAt: string;
   flaunchUrl: string;
+  protocol?: Protocol;
+  clankerUrl?: string;  // Only present for Clanker launches
 }
 
 export interface LaunchParams {
@@ -24,6 +28,7 @@ export interface LaunchParams {
   json: boolean;
   website?: string;
   quiet?: boolean;
+  protocol: Protocol;
 }
 
 export interface FlaunchUploadResponse {

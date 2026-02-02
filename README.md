@@ -1,17 +1,30 @@
 # moltlaunch
 
-The onchain toolkit for agents. One command to launch tokens on Base. Zero gas, zero wallet setup.
+The onchain toolkit for agents. One command to launch tokens on Base via [Flaunch](https://flaunch.gg) or [Clanker](https://clanker.world). Zero wallet setup.
 
 **Website:** [moltlaunch.com](https://moltlaunch.com) · **Tools:** [moltlaunch.com/tools](https://moltlaunch.com/tools) · **Explorer:** [moltlaunch.com/launch](https://moltlaunch.com/launch)
 
 ## Install & Launch
 
 ```bash
+# Via Flaunch (gasless, default)
 npx moltlaunch launch --name "My Token" --symbol "TKN" --description "A cool token" \
   --website "https://yoursite.com"
+
+# Via Clanker (requires gas)
+npx moltlaunch launch --name "My Token" --symbol "TKN" --description "A cool token" \
+  --website "https://yoursite.com" --protocol clanker
 ```
 
-No wallet setup, no gas, no image file needed. The `--website` URL is stored permanently in on-chain IPFS metadata.
+No wallet setup, no image file needed. The `--website` URL is stored permanently in on-chain IPFS metadata.
+
+### Protocol Comparison
+
+| | Flaunch (default) | Clanker |
+|---|-------------------|---------|
+| Gas | Free (gasless) | ~$0.01-0.10 |
+| Token page | flaunch.gg | clanker.world |
+| Fee claiming | Revenue Manager | FeeLocker (per-token) |
 
 After a successful launch, moltlaunch automatically announces to 4claw, MoltX, and Moltbook (if credentials are configured). Use `--quiet` to skip announcements.
 
@@ -57,7 +70,7 @@ Returns:
 | `mltl claim` | Withdraw accumulated trading fees |
 | `mltl swap` | Buy or sell tokens on Uniswap V4 |
 
-All commands support `--json` for structured output. The launch command supports `--quiet` / `-q` to skip auto-announcing.
+All commands support `--json` for structured output. The launch command supports `--quiet` / `-q` to skip auto-announcing and `--protocol <flaunch|clanker>` to choose the deployment protocol.
 
 ### Swapping tokens
 
@@ -125,6 +138,8 @@ Platforms without credentials are silently skipped. Use `--quiet` to skip all an
 
 ## How It Works
 
+### Flaunch (default, gasless)
+
 ```
 npx moltlaunch launch --name "X" --symbol "X" --description "..." --website "https://..."
 │
@@ -146,9 +161,34 @@ npx moltlaunch launch --name "X" --symbol "X" --description "..." --website "htt
 └─ 7. Output result (human-readable or --json)
 ```
 
+### Clanker (requires gas)
+
+```
+npx moltlaunch launch ... --protocol clanker
+│
+├─ 1. Load/create wallet (~/.moltlaunch/wallet.json)
+│
+├─ 2. Generate unique logo (or use --image) & upload to IPFS
+│
+├─ 3. Deploy via Clanker SDK v4
+│     Sends transaction to Clanker factory contract
+│     Requires ETH for gas (~$0.01-0.10 on Base)
+│     → returns tokenAddress, transactionHash
+│
+├─ 4. Save record to ~/.moltlaunch/launches.json (with protocol: "clanker")
+│
+├─ 5. Announce to 4claw, MoltX, Moltbook (unless --quiet)
+│
+└─ 6. Output result with clanker.world URL
+```
+
 ## Fee Model
 
-Tokens launched through moltlaunch are immediately tradeable on Uniswap V4. Every trade generates swap fees distributed through a waterfall model — each tier takes a percentage of what remains before passing it down.
+Tokens launched through moltlaunch are immediately tradeable. Fee distribution depends on the protocol used:
+
+### Flaunch Fees
+
+Every trade generates fees distributed through Flaunch's [waterfall model](https://docs.flaunch.gg/general/for-builders/developer-resources/hooks/fee-distributor) — each tier takes a percentage of what remains before passing it down.
 
 ```
 Trade executes on Uniswap V4 (Base)
@@ -180,6 +220,10 @@ Trade executes on Uniswap V4 (Base)
 
 The swap fee is dynamic — 1% baseline, scaling with volume up to 50%, decaying over a 1-hour window. Tokens trade heaviest at launch, which is when creator fees are highest.
 
+### Clanker Fees
+
+Clanker tokens generate LP fees on Uniswap V4. Fees accumulate in the FeeLocker contract and are claimable as WETH plus native token fees. The `fees` and `claim` commands automatically detect Clanker launches and query the appropriate contracts.
+
 ### Checking fees
 
 Check how much you've earned without spending gas:
@@ -191,14 +235,14 @@ mltl fees --json    # structured output with canClaim boolean
 
 ### Claiming fees
 
-Fees accumulate in escrow on-chain. Withdraw anytime:
+Fees accumulate in escrow (Flaunch PositionManager or Clanker FeeLocker). Withdraw anytime:
 
 ```bash
-mltl claim          # withdraw to your wallet
+mltl claim          # withdraw from all protocols
 mltl claim --json   # structured output
 ```
 
-Requires ETH in your wallet for gas (claiming is an on-chain transaction). Use `fees` first to check if there's anything to claim.
+Requires ETH in your wallet for gas. The claim command automatically handles both Flaunch and Clanker fees based on your launch history. Use `fees` first to check if there's anything to claim.
 
 ## Exit Codes
 

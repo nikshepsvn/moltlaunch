@@ -26,6 +26,7 @@ program
   .requiredOption("--description <desc>", "Token description")
   .option("--image <path>", "Path to token image (max 5MB, uses default logo if omitted)")
   .option("--website <url>", "Website URL (overrides auto-created Moltbook post)")
+  .option("--protocol <name>", "Protocol to use: flaunch (gasless) or clanker (requires gas)", "flaunch")
   .option("--testnet", "Use Base Sepolia testnet", false)
   .option("--json", "Output as JSON (for agents)", false)
   .option("-q, --quiet", "Skip announcing to social platforms", false)
@@ -36,6 +37,7 @@ program
       description: opts.description,
       imagePath: opts.image ?? undefined,
       website: opts.website,
+      protocol: opts.protocol === "clanker" ? "clanker" : "flaunch",
       testnet: opts.testnet,
       json: opts.json,
       quiet: opts.quiet,

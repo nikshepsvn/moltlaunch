@@ -40,6 +40,7 @@
     "@delvtech/drift": "^0.8.4",
     "@delvtech/drift-viem": "^0.8.4",
     "@flaunch/sdk": "^0.6.0",
+    "clanker-sdk": "^4.2.10",
     "commander": "^12.1.0",
     "ethers": "^6.13.0",
     "viem": "^2.21.0"

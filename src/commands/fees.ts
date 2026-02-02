@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
-import { loadWallet, getWalletBalance } from "../lib/wallet.js";
+import { loadWallet, getWalletBalance, loadLaunchRecords } from "../lib/wallet.js";
+import { getClankerFees } from "../lib/clanker-fees.js";
 import { REVENUE_MANAGER_ADDRESS, CHAIN } from "../lib/config.js";
 import { printSuccess, printError } from "../lib/output.js";
 import { EXIT_CODES, NoWalletError, MltlError } from "../lib/errors.js";
@@ -41,16 +42,45 @@ export async function fees(opts: FeesOpts): Promise<void> {
     const walletBalance = await getWalletBalance(walletData.address, network);
     const hasGas = parseFloat(walletBalance) > 0;
 
-    printSuccess("Fee balance", {
-      claimable: `${claimableEth} ETH`,
-      afterProtocolFee: `~${afterProtocolEth} ETH`,
-      protocolFee: `${Number(protocolFeeBps) / 100}%`,
+    // Check for Clanker fees from launched tokens
+    const launches = await loadLaunchRecords();
+    const clankerLaunches = launches.filter(l => l.protocol === "clanker");
+
+    let clankerFees = null;
+    if (clankerLaunches.length > 0) {
+      try {
+        clankerFees = await getClankerFees(walletData.address, clankerLaunches, network);
+      } catch {
+        // Clanker fee check failed, continue with Flaunch fees
+      }
+    }
+
+    // Build output
+    const output: Record<string, unknown> = {
+      flaunch: {
+        claimable: `${claimableEth} ETH`,
+        afterProtocolFee: `~${afterProtocolEth} ETH`,
+        protocolFee: `${Number(protocolFeeBps) / 100}%`,
+      },
       wallet: walletData.address,
       walletBalance: `${walletBalance} ETH`,
       hasGas,
       network: chain.name,
-      canClaim: hasGas && claimable > 0n,
-    }, json);
+      canClaim: hasGas && (claimable > 0n || (clankerFees && clankerFees.wethClaimable > 0n)),
+    };
+
+    // Add Clanker fees if available
+    if (clankerFees) {
+      output.clanker = {
+        weth: `${clankerFees.wethClaimableFormatted} ETH`,
+        tokens: clankerFees.tokenBalances.map(t => ({
+          symbol: t.symbol,
+          amount: t.claimableFormatted,
+        })),
+      };
+    }
+
+    printSuccess("Fee balance", output, json);
   } catch (error) {
     if (error instanceof MltlError) {
       printError(error.message, json, error.exitCode);
