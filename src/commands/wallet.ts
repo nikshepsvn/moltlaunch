@@ -3,12 +3,11 @@ import { printSuccess, printError } from "../lib/output.js";
 import { EXIT_CODES, MltlError } from "../lib/errors.js";
 
 interface WalletOpts {
-  showKey: boolean;
   json: boolean;
 }
 
 export async function wallet(opts: WalletOpts): Promise<void> {
-  const { showKey, json } = opts;
+  const { json } = opts;
 
   try {
     const data = await loadWallet();
@@ -30,10 +29,6 @@ export async function wallet(opts: WalletOpts): Promise<void> {
       network: json ? "Base" : undefined,
       createdAt: data.createdAt,
     };
-
-    if (showKey) {
-      output.privateKey = data.privateKey;
-    }
 
     printSuccess("Wallet info", output, json);
   } catch (error) {

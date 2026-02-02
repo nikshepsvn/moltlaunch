@@ -7,4 +7,9 @@ export default defineConfig({
     react(),
     tailwind(),
   ],
+  vite: {
+    resolve: {
+      dedupe: ['react', 'react-dom'],
+    },
+  },
 });

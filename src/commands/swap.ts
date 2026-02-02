@@ -1,7 +1,8 @@
 import { parseEther, type Hex } from "viem";
 import { loadWallet, getWalletBalance } from "../lib/wallet.js";
-import { createFlaunchSdk } from "../lib/viem-client.js";
+import { createFlaunchSdk, setMemo, clearMemo } from "../lib/viem-client.js";
 import { CHAIN, DEFAULT_SLIPPAGE_PERCENT } from "../lib/config.js";
+import { encodeMemo } from "../lib/memo.js";
 import { printSuccess, printError } from "../lib/output.js";
 import { EXIT_CODES, NoWalletError, NoGasError, SwapError, MltlError } from "../lib/errors.js";
 import type { SwapParams, Network } from "../types.js";
@@ -22,6 +23,20 @@ export async function swap(opts: SwapParams): Promise<void> {
     if (!json) console.log(`\nSwapping on ${chainConfig.name}...`);
 
     const { flaunch, publicClient, walletClient, account } = createFlaunchSdk(walletData.privateKey, network);
+
+    // Encode memo into pending calldata append (if provided)
+    if (opts.memo) {
+      const memoHex = encodeMemo({
+        agent: walletData.address,
+        action: side,
+        token,
+        memo: opts.memo,
+        ts: Date.now(),
+      });
+      setMemo(memoHex);
+    } else {
+      clearMemo();
+    }
 
     const coinAddress = token as `0x${string}`;
     const amountIn = parseEther(amount);
@@ -66,6 +81,9 @@ export async function swap(opts: SwapParams): Promise<void> {
       }
     }
 
+    // Clear memo in case SDK didn't trigger sendTransaction (shouldn't happen)
+    clearMemo();
+
     if (!json) console.log(` tx ${txHash}`);
     if (!json) process.stdout.write("Waiting for confirmation...");
 
@@ -85,8 +103,10 @@ export async function swap(opts: SwapParams): Promise<void> {
       network: chainConfig.name,
       explorer: `${chainConfig.explorer}/tx/${receipt.transactionHash}`,
       flaunch: `${chainConfig.flaunchUrl}/coin/${token}`,
+      ...(opts.memo ? { memo: opts.memo } : {}),
     }, json);
   } catch (error) {
+    clearMemo();
     if (error instanceof MltlError) {
       printError(error.message, json, error.exitCode);
       process.exit(error.exitCode);

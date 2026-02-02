@@ -1,0 +1,18 @@
+name = "moltlaunch-network"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+kv_namespaces = [
+  { binding = "NETWORK_KV", id = "458b7a5fa8c24f038aa033f75a984caa", preview_id = "bfac4a506ee64a6ebffe95bc21dd1e64" }
+]
+
+[triggers]
+crons = ["*/2 * * * *"]
+
+[vars]
+FLAUNCH_API = "https://api.flayerlabs.xyz/v1/base"
+BASE_RPC = "https://mainnet.base.org"
+# ALCHEMY_RPC — set via: wrangler secret put ALCHEMY_RPC
+RM_ADDRESS = "0x3Bc08524d9DaaDEC9d1Af87818d809611F0fD669"
+MEMO_MAGIC_PREFIX = "4d4c544c"
+FLAUNCH_URL = "https://flaunch.gg/base"

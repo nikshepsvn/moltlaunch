@@ -5,12 +5,13 @@ export default {
     extend: {
       colors: {
         crt: {
-          bg: '#050101',
-          surface: '#0a0303',
-          border: '#1e0606',
+          bg: '#080404',
+          surface: '#0e0808',
+          'surface-2': '#140c0c',
+          border: '#2a1212',
           'border-bright': '#dc2626',
-          text: '#e0d0d0',
-          dim: '#bb5555',
+          text: '#f0e0e0',
+          dim: '#cc6666',
           accent: '#ef4444',
           'accent-bright': '#ff3333',
           'accent-glow': '#ff4444',
@@ -23,6 +24,7 @@ export default {
       },
       fontFamily: {
         pixel: ['"Press Start 2P"', 'monospace'],
+        brand: ['"Press Start 2P"', 'monospace'],
         mono: ['"SF Mono"', '"Fira Code"', 'Consolas', 'monospace'],
       },
       animation: {

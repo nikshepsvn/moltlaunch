@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { access } from "node:fs/promises";
 import { loadOrCreateWallet, saveLaunchRecord } from "../lib/wallet.js";
-import { uploadImage, launchMemecoin, pollLaunchStatus } from "../lib/flaunch-api.js";
+import { uploadImage, launchMemecoin, pollLaunchStatus, fetchTokensByOwner } from "../lib/flaunch-api.js";
 import { generateTokenLogo } from "../lib/generate-logo.js";
 import { printSuccess, printError } from "../lib/output.js";
 import { announceToken } from "../lib/announce.js";
@@ -38,11 +38,22 @@ export async function launch(opts: LaunchParams): Promise<void> {
     if (!json) {
       if (isNew) {
         console.log(`\nWallet created: ${wallet.address}`);
-        console.log(`Private key: ${wallet.privateKey}`);
-        console.log("(Save this key — it will not be shown again)\n");
+        console.log(`Key saved to ~/.moltlaunch/wallet.json (never share this file)\n`);
       } else {
         console.log(`\nUsing wallet: ${wallet.address}`);
       }
+    }
+
+    // Check: one token per wallet
+    const existing = await fetchTokensByOwner(wallet.address, network);
+    if (existing.data.length > 0) {
+      const t = existing.data[0];
+      printError(
+        `This wallet already has a token: ${t.name} (${t.symbol}). One identity per wallet.`,
+        json,
+        EXIT_CODES.GENERAL,
+      );
+      process.exit(EXIT_CODES.GENERAL);
     }
 
     // Step 2: Upload image to IPFS
@@ -130,8 +141,8 @@ export async function launch(opts: LaunchParams): Promise<void> {
     }
 
     if (isNew) {
-      outputData.privateKey = wallet.privateKey;
-      outputData.walletNote = "Save this private key — it will not be shown again";
+      outputData.walletPath = "~/.moltlaunch/wallet.json";
+      outputData.walletNote = "Key saved locally — never share this file";
     }
 
     printSuccess("Token launched successfully!", outputData, json);

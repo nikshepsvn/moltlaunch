@@ -15,6 +15,8 @@ import type {
   FlaunchStatusResponse,
   FlaunchTokenListResponse,
   FlaunchTokenDetail,
+  FlaunchTokenDetails,
+  FlaunchHolder,
 } from "../types.js";
 
 function sleep(ms: number): Promise<void> {
@@ -181,6 +183,66 @@ export async function fetchToken(
   }
 
   return (await response.json()) as FlaunchTokenDetail;
+}
+
+/**
+ * Fetch detailed token info (price, volume, creator) from the Flaunch data API.
+ */
+export async function fetchTokenDetails(
+  tokenAddress: string,
+  network: Network,
+): Promise<FlaunchTokenDetails> {
+  const chain = network === "testnet" ? CHAIN.testnet : CHAIN.mainnet;
+  const url = `${FLAUNCH_DATA_API_BASE}/v1/${chain.network}/tokens/${tokenAddress}/details`;
+
+  const response = await fetchWithRetry(url, { method: "GET" });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Flaunch data API error: ${response.status} — ${text}`);
+  }
+
+  const data = (await response.json()) as Record<string, unknown>;
+
+  if (!data || typeof data !== "object" || !data.tokenAddress || !data.name || !data.symbol) {
+    throw new Error("Invalid token details response: missing required fields");
+  }
+
+  const price = data.price as Record<string, string> | undefined;
+  const volume = data.volume as Record<string, string> | undefined;
+  if (!price?.marketCapETH || !volume?.volume24h) {
+    throw new Error("Invalid token details response: missing price/volume data");
+  }
+
+  return data as unknown as FlaunchTokenDetails;
+}
+
+/**
+ * Fetch the number of unique holders for a token from the Flaunch data API.
+ * Uses pagination.total when available; throws if the API doesn't provide it.
+ */
+export async function fetchTokenHolderCount(
+  tokenAddress: string,
+  network: Network,
+): Promise<number> {
+  const chain = network === "testnet" ? CHAIN.testnet : CHAIN.mainnet;
+  const url = `${FLAUNCH_DATA_API_BASE}/v1/${chain.network}/tokens/${tokenAddress}/holders?limit=1&offset=0`;
+
+  const response = await fetchWithRetry(url, { method: "GET" });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Flaunch data API error: ${response.status} — ${text}`);
+  }
+
+  const data = (await response.json()) as { data: FlaunchHolder[]; pagination: { total?: number; limit: number; offset: number } };
+
+  if (typeof data.pagination?.total === "number") {
+    return data.pagination.total;
+  }
+
+  // API doesn't provide total — can't reliably count with limit=1
+  throw new Error("Holder count unavailable: API response missing pagination.total");
 }
 
 /**

@@ -1,5 +1,15 @@
-export const RM_ADDRESS = "0x3Bc08524d9DaaDEC9d1Af87818d809611F0fD669";
-export const FLAUNCH_DATA_API = "https://api.flayerlabs.xyz/v1/base";
-export const UNISWAP_URL = "https://app.uniswap.org/explore/tokens/base";
+// Re-export constants from shared package — single source of truth
+export {
+  REVENUE_MANAGER_ADDRESS as RM_ADDRESS,
+  FLAUNCH_DATA_API,
+  FLAUNCH_URL,
+  WORKER_API_URL as NETWORK_API,
+  UNISWAP_URL,
+  BASE_RPC,
+  MEMO_MAGIC_PREFIX,
+} from "@moltlaunch/shared";
+
+// Site-specific constants (not shared with CLI/worker)
 export const PER_PAGE = 20;
 export const TOKENS_PER_PAGE = 100;
+export const SWAP_POLL_INTERVAL = 60_000;

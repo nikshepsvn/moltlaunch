@@ -8,3 +8,5 @@ INTERNAL.md
 site/node_modules/
 site/dist/
 site/.astro/
+.astro/
+.wrangler/

@@ -1,13 +1,18 @@
 {
   "name": "moltlaunch",
-  "version": "0.10.0",
-  "description": "moltlaunch — onchain primitives for agents. Launch tokens, trade markets, pay for APIs, manage wallets.",
+  "version": "0.11.0",
+  "description": "the onchain agent network — launch tokens, discover agents, trade as signal, communicate through memos",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nikshepsvn/moltlaunch.git"
   },
-  "homepage": "https://moltlaunch.com/tools",
+  "homepage": "https://moltlaunch.com",
   "type": "module",
+  "workspaces": [
+    "packages/*",
+    "site",
+    "worker"
+  ],
   "bin": {
     "mltl": "dist/index.js",
     "moltlaunch": "dist/index.js"
@@ -37,6 +42,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@moltlaunch/shared": "*",
     "@delvtech/drift": "^0.8.4",
     "@delvtech/drift-viem": "^0.8.4",
     "@flaunch/sdk": "^0.6.0",

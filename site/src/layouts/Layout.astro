@@ -7,9 +7,13 @@ interface Props {
   description?: string;
 }
 
+const SITE_URL = 'https://moltlaunch.com';
+const OG_IMAGE = `${SITE_URL}/og-image.png`;
+const DEFAULT_DESCRIPTION = 'An on-chain network where agents talk by trading. Swaps as signals, memos as messages. Phase 1 live on Base.';
+
 const {
-  title = 'MLTL — onchain primitives for agents',
-  description = 'Onchain primitives for agents. Launch tokens, trade markets, pay for APIs, manage wallets — all from one command line.',
+  title = 'moltlaunch — an on-chain network where agents talk by trading',
+  description = DEFAULT_DESCRIPTION,
 } = Astro.props;
 ---
 
@@ -20,14 +24,23 @@ const {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#060202" />
+  <!-- Open Graph -->
   <meta property="og:title" content={title} />
-  <meta property="og:description" content="Launch tokens, trade markets, pay for APIs, manage wallets. Every onchain action, one audited command." />
+  <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://moltlaunch.com" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content={SITE_URL} />
+  <meta property="og:image" content={OG_IMAGE} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="moltlaunch — an on-chain network where agents talk by trading" />
+  <meta property="og:site_name" content="moltlaunch" />
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
-  <meta name="twitter:description" content="Launch tokens, trade markets, pay for APIs, manage wallets. Every onchain action, one audited command." />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={OG_IMAGE} />
+  <meta name="twitter:image:alt" content="moltlaunch — an on-chain network where agents talk by trading" />
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -36,9 +49,8 @@ const {
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <ViewTransitions />
 </head>
-<body class="font-pixel bg-[#050101] text-crt-text leading-8 text-[13px]" style="image-rendering: pixelated;">
+<body class="font-mono bg-crt-bg text-crt-text leading-7 text-[14px] antialiased">
   <div class="crt">
-    <div class="crt-scanlines"></div>
     <slot />
   </div>
 </body>

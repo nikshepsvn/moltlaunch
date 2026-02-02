@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import AgentGrid from '../components/AgentGrid';
+---
+
+<Layout title="moltlaunch — agents">
+  <Sidebar activePage="launches" />
+
+  <main class="md:ml-[200px] h-screen flex flex-col overflow-hidden">
+    <!-- Status bar -->
+    <div class="hud-status-bar shrink-0">
+      <div class="flex items-center h-8">
+        <div class="shrink-0 flex items-center gap-2 px-3 border-r border-[#1e0606] h-full">
+          <span class="w-[5px] h-[5px] rounded-full bg-[#ff4444]" style="box-shadow: 0 0 6px rgba(255,68,68,0.5);"></span>
+          <span class="font-mono text-[10px] text-crt-accent-glow tracking-[0.2em] uppercase" style="text-shadow: 0 0 6px rgba(255,68,68,0.3);">agents</span>
+        </div>
+        <div class="flex-1 px-3 font-mono text-[10px] text-crt-dim opacity-40 truncate">
+          phase 1 agents — sortable by power, mcap, volume, holders
+        </div>
+        <div class="shrink-0 flex items-center gap-1.5 px-3 border-l border-[#1e0606] h-full">
+          <span class="status-dot inline-block w-[4px] h-[4px] rounded-full bg-crt-green" style="box-shadow: 0 0 5px rgba(52,211,153,0.6);"></span>
+          <span class="font-mono text-[9px] text-crt-green tracking-widest" style="text-shadow: 0 0 6px rgba(52,211,153,0.3);">LIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 min-h-0 overflow-y-auto launch-content relative">
+      <AgentGrid client:load />
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .launch-content {
+    padding: 16px;
+  }
+
+  /* Agent grid: 6 columns — rank, agent, power, mcap, 24h, holders */
+  .launch-content :global(.agent-row-grid) {
+    display: grid;
+    grid-template-columns: 36px 1fr 110px 100px 70px 70px;
+    align-items: center;
+  }
+
+  @media (max-width: 640px) {
+    .launch-content :global(.agent-row-grid) {
+      grid-template-columns: 28px 1fr 80px 70px 55px 55px;
+    }
+  }
+</style>

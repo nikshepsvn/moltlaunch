@@ -6,6 +6,10 @@ import { status } from "./commands/status.js";
 import { claim } from "./commands/claim.js";
 import { fees } from "./commands/fees.js";
 import { swap } from "./commands/swap.js";
+import { network } from "./commands/network.js";
+import { holdings } from "./commands/holdings.js";
+import { fund } from "./commands/fund.js";
+import { price } from "./commands/price.js";
 
 const require = createRequire(import.meta.url);
 const { version } = require("../package.json") as { version: string };
@@ -14,7 +18,7 @@ const program = new Command();
 
 program
   .name("mltl")
-  .description("moltlaunch — the onchain toolkit for agents")
+  .description("moltlaunch — the onchain agent network")
   .version(version);
 
 // Default command: launch a token
@@ -45,10 +49,9 @@ program
 program
   .command("wallet")
   .description("Show wallet address and balance")
-  .option("--show-key", "Show private key", false)
   .option("--json", "Output as JSON", false)
   .action((opts) =>
-    wallet({ showKey: opts.showKey, json: opts.json })
+    wallet({ json: opts.json })
   );
 
 program
@@ -75,7 +78,10 @@ program
   .option("--testnet", "Use Base Sepolia testnet", false)
   .option("--json", "Output as JSON", false)
   .action((opts) =>
-    claim({ testnet: opts.testnet, json: opts.json })
+    claim({
+      testnet: opts.testnet,
+      json: opts.json,
+    })
   );
 
 program
@@ -86,6 +92,7 @@ program
   .requiredOption("--side <direction>", "buy or sell")
   .option("--slippage <percent>", "Slippage tolerance percent", "5")
   .option("--testnet", "Use Base Sepolia testnet", false)
+  .option("--memo <text>", "Onchain memo — agent reasoning, strategy notes, or context (appended to tx calldata)")
   .option("--json", "Output as JSON", false)
   .action((opts) =>
     swap({
@@ -93,6 +100,50 @@ program
       amount: opts.amount,
       side: opts.side,
       slippage: parseFloat(opts.slippage),
+      testnet: opts.testnet,
+      json: opts.json,
+      memo: opts.memo,
+    })
+  );
+
+program
+  .command("network")
+  .description("Discover all moltlaunch agents and their tokens")
+  .option("--json", "Output as JSON (for agents)", false)
+  .option("--sort <field>", "Sort by: power, mcap, volume, holders, newest", "power")
+  .option("--limit <n>", "Number of agents to show (0 = all)", "0")
+  .action((opts) =>
+    network({ json: opts.json, sort: opts.sort, limit: parseInt(opts.limit, 10) })
+  );
+
+program
+  .command("holdings")
+  .description("Show tokens you hold in the network")
+  .option("--json", "Output as JSON", false)
+  .option("--testnet", "Use Base Sepolia testnet", false)
+  .action((opts) =>
+    holdings({ json: opts.json, testnet: opts.testnet })
+  );
+
+program
+  .command("fund")
+  .description("Show wallet address, balance, and funding instructions")
+  .option("--json", "Output as JSON", false)
+  .action((opts) =>
+    fund({ json: opts.json })
+  );
+
+program
+  .command("price")
+  .description("Fetch token details and price info from Flaunch")
+  .requiredOption("--token <address>", "Token contract address")
+  .option("--amount <eth>", "ETH amount to simulate spend")
+  .option("--testnet", "Use Base Sepolia testnet", false)
+  .option("--json", "Output as JSON", false)
+  .action((opts) =>
+    price({
+      token: opts.token,
+      amount: opts.amount,
       testnet: opts.testnet,
       json: opts.json,
     })
