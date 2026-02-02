@@ -10,7 +10,7 @@ import type {
   PowerScore,
 } from './types';
 import { fetchTokens, fetchTokenDetails, fetchHolders, fetchSwaps, batchedFetch } from './flaunch';
-import { batchReadBalances, fetchWalletSwaps } from './rpc';
+import { batchReadBalances, batchFetchMemos, fetchWalletSwaps } from './rpc';
 import { computePowerScore } from './scoring';
 
 const MIN_HOLDERS = 5;
@@ -219,6 +219,19 @@ async function executePipeline(env: Env): Promise<void> {
       type: 'agent' as const,
     };
   });
+
+  // 6b. Batch-resolve memos for all swaps via single RPC batch
+  const hashesNeedingMemos = allSwapEvents
+    .filter((s) => !s.memo)
+    .map((s) => s.transactionHash);
+
+  if (hashesNeedingMemos.length > 0) {
+    const memoMap = await batchFetchMemos(env, hashesNeedingMemos);
+    for (const swap of allSwapEvents) {
+      if (!swap.memo) swap.memo = memoMap.get(swap.transactionHash) ?? null;
+    }
+    console.log(`[pipeline] batch memos: ${memoMap.size}/${hashesNeedingMemos.length} resolved`);
+  }
 
   // Build cross-holding edges
   const crossEdges: CrossHoldingEdge[] = [];

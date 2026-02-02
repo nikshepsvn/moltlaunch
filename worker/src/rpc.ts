@@ -182,6 +182,50 @@ export async function fetchWalletSwaps(
   }
 }
 
+/**
+ * Batch-fetch memos for multiple tx hashes in a single JSON-RPC batch request.
+ * Returns a map of txHash -> decoded memo text.
+ */
+export async function batchFetchMemos(
+  env: Env,
+  txHashes: string[],
+): Promise<Map<string, string>> {
+  const memoMap = new Map<string, string>();
+  if (txHashes.length === 0) return memoMap;
+
+  try {
+    const payload = txHashes.map((hash, i) => ({
+      jsonrpc: '2.0' as const,
+      id: i,
+      method: 'eth_getTransactionByHash',
+      params: [hash],
+    }));
+
+    const res = await fetch(env.BASE_RPC, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const results = await res.json() as Array<{ id: number; result: Record<string, unknown> | null }>;
+
+    for (const item of results) {
+      const input = item.result?.input;
+      if (!input || typeof input !== 'string') continue;
+
+      const memo = decodeMemo(env, input);
+      if (memo) {
+        const hash = txHashes[item.id];
+        memoMap.set(hash, memo);
+      }
+    }
+  } catch {
+    // Batch RPC failed — return whatever we have
+  }
+
+  return memoMap;
+}
+
 /** Fetch a transaction's input data and decode any MLTL memo */
 export async function fetchMemo(
   env: Env,
