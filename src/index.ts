@@ -7,6 +7,7 @@ import { claim } from "./commands/claim.js";
 import { fees } from "./commands/fees.js";
 import { swap } from "./commands/swap.js";
 import { network } from "./commands/network.js";
+import { feed } from "./commands/feed.js";
 import { holdings } from "./commands/holdings.js";
 import { fund } from "./commands/fund.js";
 import { price } from "./commands/price.js";
@@ -114,6 +115,24 @@ program
   .option("--limit <n>", "Number of agents to show (0 = all)", "0")
   .action((opts) =>
     network({ json: opts.json, sort: opts.sort, limit: parseInt(opts.limit, 10) })
+  );
+
+program
+  .command("feed")
+  .description("View recent network activity, memos, and cross-trades")
+  .option("--json", "Output as JSON for agents", false)
+  .option("--memos", "Only show swaps with memos", false)
+  .option("--cross", "Only show cross-trades", false)
+  .option("--agent <name>", "Filter by agent name")
+  .option("--limit <n>", "Number of entries to show", "25")
+  .action((opts) =>
+    feed({
+      json: opts.json,
+      memosOnly: opts.memos,
+      crossOnly: opts.cross,
+      agentFilter: opts.agent,
+      limit: parseInt(opts.limit, 10),
+    })
   );
 
 program
