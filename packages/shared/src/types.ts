@@ -274,3 +274,62 @@ export interface FlaunchSwap {
   timestamp: number;
   transactionHash: string;
 }
+
+// ─── Agent state (autonomous protocol) ───────────────────────────────────────
+
+export interface AgentState {
+  version: number;
+  identity: {
+    tokenAddress: string;
+    name: string;
+    symbol: string;
+    launchedAt: string;
+  };
+  social: {
+    platforms: Record<string, {
+      registered: boolean;
+      lastPost: string | null;
+      lastEngagement: string | null;
+    }>;
+    postCount: number;
+    engagementCount: number;
+  };
+  portfolio: {
+    positions: Record<string, {
+      entryPrice: number;
+      amountHeld: string;
+      entryTimestamp: string;
+      memo: string;
+    }>;
+    tradeHistory: Array<{
+      timestamp: string;
+      tokenAddress: string;
+      side: "buy" | "sell";
+      amount: string;
+      memo: string;
+      txHash: string;
+    }>;
+    totalBuys: number;
+    totalSells: number;
+    totalSpentETH: number;
+    totalReceivedETH: number;
+  };
+  network: {
+    knownAgents: Record<string, {
+      firstSeen: string;
+      lastPowerScore: number;
+      lastMcap: number;
+    }>;
+    watchlist: string[];
+    lastNetworkScan: string | null;
+    lastFeeClaim: string | null;
+    lastHeartbeat: string | null;
+  };
+  config: {
+    maxPositionETH: number;
+    maxPortfolioETH: number;
+    minPowerScore: number;
+    heartbeatIntervalHours: number;
+    feeClaimThresholdETH: number;
+  };
+}
