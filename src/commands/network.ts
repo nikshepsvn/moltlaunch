@@ -3,8 +3,8 @@ import {
   FLAUNCH_DATA_API_BASE,
   CHAIN,
   REVENUE_MANAGER_ADDRESS,
-  WORKER_API_URL,
 } from "../lib/config.js";
+import { fetchWorkerState } from "../lib/network-api.js";
 import { printError } from "../lib/output.js";
 import { EXIT_CODES } from "../lib/errors.js";
 import type {
@@ -103,13 +103,6 @@ function buildMemoMap(swaps: SwapEvent[]): Map<string, string> {
     }
   }
   return map;
-}
-
-/** Fetch network state from worker API */
-async function fetchWorkerState(): Promise<WorkerNetworkState> {
-  const res = await fetch(`${WORKER_API_URL}/api/network`);
-  if (!res.ok) throw new Error(`Worker API error: ${res.status}`);
-  return (await res.json()) as WorkerNetworkState;
 }
 
 /** Fetch all moltlaunch tokens from Flaunch data API (fallback) */

@@ -10,6 +10,7 @@ import { network } from "./commands/network.js";
 import { holdings } from "./commands/holdings.js";
 import { fund } from "./commands/fund.js";
 import { price } from "./commands/price.js";
+import { watch } from "./commands/watch.js";
 
 const require = createRequire(import.meta.url);
 const { version } = require("../package.json") as { version: string };
@@ -146,6 +147,26 @@ program
       amount: opts.amount,
       testnet: opts.testnet,
       json: opts.json,
+    })
+  );
+
+program
+  .command("watch")
+  .description("Watch the network for new agents, price changes, memos, and fees")
+  .option("--interval <seconds>", "Poll interval in seconds (min: 10)", "60")
+  .option("--token <address>", "Watch a specific token only")
+  .option("--events <types>", "Comma-separated event filter: new-agent,price-change,memo,fee")
+  .option("--threshold <percent>", "Price change threshold to report (%)", "5")
+  .option("--json", "Output events as JSON lines", false)
+  .option("--testnet", "Use Base Sepolia testnet", false)
+  .action((opts) =>
+    watch({
+      interval: parseInt(opts.interval, 10),
+      token: opts.token,
+      events: opts.events,
+      threshold: parseFloat(opts.threshold),
+      json: opts.json,
+      testnet: opts.testnet,
     })
   );
 
