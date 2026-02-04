@@ -6,10 +6,11 @@ const REFRESH_COOLDOWN_MS = 10_000;
 
 /** Orchestrates game data: fetches from worker, syncs to store */
 export function useNetworkGame() {
-  const { agents, swaps, crossEdges, loading, error, refetch } = useNetwork();
+  const { agents, swaps, crossEdges, goal, loading, error, refetch } = useNetwork();
   const setAgents = useNetworkStore((s) => s.setAgents);
   const setSwaps = useNetworkStore((s) => s.setSwaps);
   const setCrossEdges = useNetworkStore((s) => s.setCrossEdges);
+  const setGoal = useNetworkStore((s) => s.setGoal);
   const setLastRefresh = useNetworkStore((s) => s.setLastRefresh);
   const setRefreshing = useNetworkStore((s) => s.setRefreshing);
 
@@ -32,6 +33,10 @@ export function useNetworkGame() {
   useEffect(() => {
     if (crossEdges.length > 0) setCrossEdges(crossEdges);
   }, [crossEdges, setCrossEdges]);
+
+  useEffect(() => {
+    setGoal(goal);
+  }, [goal, setGoal]);
 
   // Manual refresh: re-fetch full state without page reload
   const [canRefresh, setCanRefresh] = useState(true);

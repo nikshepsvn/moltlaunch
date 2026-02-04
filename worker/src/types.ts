@@ -3,6 +3,8 @@ export type {
   PowerScore,
   PlayerType,
   NetworkAgent as Agent,
+  NetworkGoal,
+  OnboardCredit,
   SwapEvent,
   CrossHoldingEdge,
   NetworkState,
@@ -24,4 +26,5 @@ export interface Env {
   MEMO_MAGIC_PREFIX: string;
   FLAUNCH_URL: string;
   FAL_KEY: string;
+  ADMIN_TOKEN: string;
 }

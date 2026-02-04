@@ -98,6 +98,7 @@ export function useNetwork() {
     agents: state?.agents ?? [],
     swaps: state?.swaps ?? [],
     crossEdges: state?.crossEdges ?? [],
+    goal: state?.goal ?? null,
     timestamp: state?.timestamp ?? null,
     loading,
     error,

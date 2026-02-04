@@ -1,6 +1,8 @@
 import type {
   Env,
   Agent,
+  NetworkGoal,
+  OnboardCredit,
   SwapEvent,
   CrossHoldingEdge,
   NetworkState,
@@ -11,7 +13,7 @@ import type {
 } from './types';
 import { fetchTokens, fetchTokenDetails, fetchHolders, fetchSwaps, batchedFetch } from './flaunch';
 import { batchReadBalances, batchFetchMemos, fetchWalletSwaps } from './rpc';
-import { computePowerScore } from './scoring';
+import { computePowerScore, computeOnboardGoalScore } from './scoring';
 import { resolveBanners } from './banners';
 
 const MIN_HOLDERS = 5;
@@ -41,12 +43,17 @@ export async function runPipeline(env: Env): Promise<void> {
 }
 
 async function executePipeline(env: Env): Promise<void> {
+  // 0. Read active goal from KV (if any)
+  const goalRaw = await env.NETWORK_KV.get('network:goal');
+  const goal: NetworkGoal | null = goalRaw ? JSON.parse(goalRaw) : null;
+  const goalWeight = goal ? goal.weight : 0;
+
   // 1. Discover tokens
   const tokens = await fetchTokens(env);
   console.log(`[pipeline] discovered ${tokens.length} tokens`);
 
   if (tokens.length === 0) {
-    await storeState(env, { agents: [], swaps: [], crossEdges: [], timestamp: Date.now() });
+    await storeState(env, { agents: [], swaps: [], crossEdges: [], goal: null, timestamp: Date.now() });
     return;
   }
 
@@ -57,7 +64,7 @@ async function executePipeline(env: Env): Promise<void> {
   console.log(`[pipeline] ${candidates.length} candidates above mcap threshold`);
 
   if (candidates.length === 0) {
-    await storeState(env, { agents: [], swaps: [], crossEdges: [], timestamp: Date.now() });
+    await storeState(env, { agents: [], swaps: [], crossEdges: [], goal: null, timestamp: Date.now() });
     return;
   }
 
@@ -77,7 +84,7 @@ async function executePipeline(env: Env): Promise<void> {
   console.log(`[pipeline] ${qualified.length}/${candidates.length} have >= ${MIN_HOLDERS} holders`);
 
   if (qualified.length === 0) {
-    await storeState(env, { agents: [], swaps: [], crossEdges: [], timestamp: Date.now() });
+    await storeState(env, { agents: [], swaps: [], crossEdges: [], goal: null, timestamp: Date.now() });
     return;
   }
 
@@ -217,6 +224,8 @@ async function executePipeline(env: Env): Promise<void> {
       crossTradeCount,
       memoCount: crossTradeCount,
       powerScore: DEFAULT_POWER_SCORE,
+      goalScore: 0,
+      onboards: [],
       type: 'agent' as const,
     };
   });
@@ -312,9 +321,32 @@ async function executePipeline(env: Env): Promise<void> {
   allSwapEvents.sort((a, b) => b.timestamp - a.timestamp);
   const trimmedSwaps = allSwapEvents.slice(0, 100);
 
+  // 7b. Compute onboard credits (goal: "Grow the Network")
+  // If a qualified agent's creator wallet holds your token, you get onboard credit
+  if (goal && goal.metric === 'onboards') {
+    for (const agent of allAgents) {
+      const credits: OnboardCredit[] = [];
+      // Check each other agent's creator wallet — do they hold this agent's token?
+      for (const other of allAgents) {
+        if (other.tokenAddress === agent.tokenAddress) continue;
+        const otherCreator = other.creator.toLowerCase();
+        const held = walletHoldings.get(otherCreator);
+        if (held && held.has(agent.tokenAddress.toLowerCase())) {
+          credits.push({
+            agentAddress: other.tokenAddress,
+            agentName: other.name,
+          });
+        }
+      }
+      agent.onboards = credits;
+      agent.goalScore = computeOnboardGoalScore(credits.length);
+    }
+    console.log(`[pipeline] onboard credits computed for ${allAgents.length} agents`);
+  }
+
   // 8. Score and sort agents
   const scoredAgents = allAgents
-    .map((a) => ({ ...a, powerScore: computePowerScore(a) }))
+    .map((a) => ({ ...a, powerScore: computePowerScore(a, goalWeight, a.goalScore) }))
     .sort((a, b) => b.powerScore.total - a.powerScore.total);
 
   // 9. Resolve banner images (cached in KV, generates missing ones via fal.ai)
@@ -325,6 +357,7 @@ async function executePipeline(env: Env): Promise<void> {
     agents: scoredAgents,
     swaps: trimmedSwaps,
     crossEdges,
+    goal,
     timestamp: Date.now(),
   };
 

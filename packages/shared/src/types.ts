@@ -8,6 +8,21 @@ export interface PowerScore {
   vitality: number;
 }
 
+export interface NetworkGoal {
+  id: string;
+  name: string;
+  description: string;
+  metric: string;
+  weight: number;
+  startedAt: number;
+  endsAt: number | null;
+}
+
+export interface OnboardCredit {
+  agentAddress: string;
+  agentName: string;
+}
+
 export type PlayerType = "agent" | "human" | "unknown";
 
 export interface NetworkAgent {
@@ -29,6 +44,8 @@ export interface NetworkAgent {
   crossTradeCount: number;
   memoCount: number;
   powerScore: PowerScore;
+  goalScore: number;
+  onboards: OnboardCredit[];
   type: PlayerType;
   bannerUrl?: string;
 }
@@ -59,6 +76,7 @@ export interface NetworkState {
   agents: NetworkAgent[];
   swaps: SwapEvent[];
   crossEdges: CrossHoldingEdge[];
+  goal: NetworkGoal | null;
   timestamp: number;
 }
 

@@ -140,6 +140,7 @@ function renderRichOutput(
   agents: NetworkAgentRich[],
   memoMap: Map<string, string>,
   opts: NetworkOpts,
+  hasGoal: boolean = false,
 ): void {
   let sorted = sortAgents(agents, opts.sort);
   if (opts.limit > 0) sorted = sorted.slice(0, opts.limit);
@@ -151,10 +152,14 @@ function renderRichOutput(
     const score = agent.powerScore.total;
     const bar = powerBar(score);
     const memo = memoMap.get(agent.tokenAddress);
+    const goalTag = hasGoal && agent.goalScore > 0 ? ` [goal: ${agent.goalScore}]` : "";
 
-    console.log(`  #${rank}  ${agent.name} (${agent.symbol})${" ".repeat(Math.max(1, 36 - agent.name.length - agent.symbol.length))}${bar} ${score}`);
+    console.log(`  #${rank}  ${agent.name} (${agent.symbol})${" ".repeat(Math.max(1, 36 - agent.name.length - agent.symbol.length))}${bar} ${score}${goalTag}`);
     console.log(`      MCap: ${formatEth(agent.marketCapETH)} · Vol 24h: ${formatEth(agent.volume24hETH)} · ${agent.holders} holders`);
     console.log(`      Fees: ${formatEth(agent.claimableETH)} · Creator: ${truncate(agent.creator)}`);
+    if (hasGoal && agent.onboards.length > 0) {
+      console.log(`      Onboards: ${agent.onboards.length} (${agent.onboards.map((o) => o.agentName).join(", ")})`);
+    }
     if (memo) console.log(`      Last memo: "${memo}"`);
     console.log(`      Token: ${agent.tokenAddress}`);
     console.log();
@@ -240,13 +245,19 @@ export async function network(opts: NetworkOpts): Promise<void> {
           success: true,
           count: sorted.length,
           totalCount: workerState.agents.length,
+          goal: workerState.goal ?? null,
           agents: sorted,
         }, null, 2));
         return;
       }
 
+      if (workerState.goal) {
+        console.log(`\n  ⬡ Goal: ${workerState.goal.name} (${Math.round(workerState.goal.weight * 100)}% of score)`);
+        console.log(`    ${workerState.goal.description}\n`);
+      }
+
       const memoMap = buildMemoMap(workerState.swaps);
-      renderRichOutput(workerState.agents, memoMap, opts);
+      renderRichOutput(workerState.agents, memoMap, opts, !!workerState.goal);
       return;
     }
 

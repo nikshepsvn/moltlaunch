@@ -1,18 +1,37 @@
 import type { Agent, PowerScore } from './types';
 
 /**
- * Absolute power score (0-100) from 4 pillars.
- * No relative normalization — each agent is scored against fixed thresholds.
+ * Onboard goal score: sqrt curve rewarding early onboards heavily.
+ * 1→30, 2→55, 3→75, 5→100
  */
-export function computePowerScore(agent: Agent): PowerScore {
+export function computeOnboardGoalScore(count: number): number {
+  if (count <= 0) return 0;
+  // sqrt(count / 5) * 100, capped at 100
+  return Math.min(100, Math.round(Math.sqrt(count / 5) * 100));
+}
+
+/**
+ * Absolute power score (0-100) from 4 pillars + optional goal bonus.
+ * No relative normalization — each agent is scored against fixed thresholds.
+ * When a goal is active, total blends base pillars with goal score by goalWeight.
+ */
+export function computePowerScore(
+  agent: Agent,
+  goalWeight: number = 0,
+  goalScore: number = 0,
+): PowerScore {
   const revenue = computeRevenue(agent);
   const market = computeMarket(agent);
   const network = computeNetwork(agent);
   const vitality = computeVitality(agent);
 
-  const total = Math.round(
+  const basePillars = Math.round(
     revenue * 0.30 + market * 0.25 + network * 0.25 + vitality * 0.20,
   );
+
+  const total = goalWeight > 0
+    ? Math.round(basePillars * (1 - goalWeight) + goalScore * goalWeight)
+    : basePillars;
 
   return {
     total: clamp(total, 0, 100),

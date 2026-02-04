@@ -1,4 +1,4 @@
-import type { Env, NetworkState } from './types';
+import type { Env, NetworkState, NetworkGoal } from './types';
 import { runPipeline } from './pipeline';
 
 export default {
@@ -6,13 +6,37 @@ export default {
     const url = new URL(request.url);
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     };
 
     // CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: corsHeaders });
+    }
+
+    // POST /api/network/goal — admin-only goal management
+    if (request.method === 'POST' && url.pathname === '/api/network/goal') {
+      if (!env.ADMIN_TOKEN || env.ADMIN_TOKEN.length < 16) {
+        return jsonResponse({ error: 'ADMIN_TOKEN not configured' }, 500, corsHeaders);
+      }
+
+      const authHeader = request.headers.get('Authorization');
+      if (authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+        return jsonResponse({ error: 'Unauthorized' }, 401, corsHeaders);
+      }
+
+      const body = await request.json() as NetworkGoal;
+      if (
+        !body.id || !body.name || !body.description || !body.metric ||
+        typeof body.weight !== 'number' || body.weight < 0 || body.weight > 1 ||
+        typeof body.startedAt !== 'number'
+      ) {
+        return jsonResponse({ error: 'Invalid goal: requires id, name, description, metric, weight (0-1), startedAt' }, 400, corsHeaders);
+      }
+
+      await env.NETWORK_KV.put('network:goal', JSON.stringify(body));
+      return jsonResponse({ status: 'Goal saved', goal: body }, 200, corsHeaders);
     }
 
     if (request.method !== 'GET') {

@@ -1,10 +1,27 @@
 node_modules/
 dist/
 *.tsbuildinfo
+
+# Secrets & credentials
 .env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+**/wallet.json
+~/.moltlaunch/
+~/.config/4claw/
+~/.config/moltx/
+~/.config/moltbook/
+
+# Internal
 INTERNAL.md
 .claude/
 .playwright-mcp/
+
+# Site build
 site/node_modules/
 site/dist/
 site/.astro/

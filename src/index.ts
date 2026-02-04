@@ -12,6 +12,7 @@ import { holdings } from "./commands/holdings.js";
 import { fund } from "./commands/fund.js";
 import { price } from "./commands/price.js";
 
+
 const require = createRequire(import.meta.url);
 const { version } = require("../package.json") as { version: string };
 
