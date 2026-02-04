@@ -30,10 +30,9 @@ program
   .requiredOption("--symbol <symbol>", "Token symbol")
   .requiredOption("--description <desc>", "Token description")
   .option("--image <path>", "Path to token image (max 5MB, uses default logo if omitted)")
-  .option("--website <url>", "Website URL (overrides auto-created Moltbook post)")
+  .option("--website <url>", "Website URL stored in on-chain IPFS metadata")
   .option("--testnet", "Use Base Sepolia testnet", false)
   .option("--json", "Output as JSON (for agents)", false)
-  .option("-q, --quiet", "Skip announcing to social platforms", false)
   .action((opts) =>
     launch({
       name: opts.name,
@@ -43,7 +42,6 @@ program
       website: opts.website,
       testnet: opts.testnet,
       json: opts.json,
-      quiet: opts.quiet,
     })
   );
 

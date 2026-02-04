@@ -16,7 +16,6 @@ export type {
   LaunchParams,
   SwapParams,
   SwapResult,
-  AnnouncementResult,
   Holding,
   // Flaunch types
   FlaunchToken,

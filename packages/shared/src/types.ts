@@ -102,7 +102,6 @@ export interface LaunchParams {
   testnet: boolean;
   json: boolean;
   website?: string;
-  quiet?: boolean;
 }
 
 export interface SwapParams {
@@ -124,12 +123,6 @@ export interface SwapResult {
   network: string;
   explorer: string;
   flaunch: string;
-}
-
-export interface AnnouncementResult {
-  platform: string;
-  url: string | null;
-  success: boolean;
 }
 
 export interface Holding {
@@ -285,15 +278,6 @@ export interface AgentState {
     name: string;
     symbol: string;
     launchedAt: string;
-  };
-  social: {
-    platforms: Record<string, {
-      registered: boolean;
-      lastPost: string | null;
-      lastEngagement: string | null;
-    }>;
-    postCount: number;
-    engagementCount: number;
   };
   portfolio: {
     positions: Record<string, {
