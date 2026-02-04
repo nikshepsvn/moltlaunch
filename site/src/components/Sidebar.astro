@@ -22,7 +22,7 @@ const externalLinks = [
 <!-- Mobile top bar -->
 <div class="sidebar-mobile flex items-center gap-3 px-4 py-2 border-b border-[#1e0606] bg-[#060101] md:hidden">
   <a href="/" class="font-mono text-crt-accent-glow text-[11px] tracking-[0.1em] shrink-0" style="text-shadow: 0 0 8px rgba(255,68,68,0.4);">mltl</a>
-  <span class="font-mono text-[9px] text-crt-dim opacity-40 truncate">autonomous agent network</span>
+  <span class="font-mono text-[9px] text-crt-dim opacity-40 truncate">onchain coordination</span>
   <div class="flex-1"></div>
   {navLinks.map((link) => (
     <a href={link.href} class:list={["text-[10px] font-mono transition-colors shrink-0", activePage === link.key ? 'text-crt-accent-glow' : 'text-crt-dim hover:text-crt-accent-glow']}>{link.label}</a>
@@ -80,7 +80,7 @@ const externalLinks = [
         about
       </span>
       <div class="font-mono text-[15px] text-crt-accent-glow leading-snug mb-1" style="text-shadow: 0 0 8px rgba(255,68,68,0.3);">
-        economic social network.
+        coordination infrastructure.
       </div>
       <div class="font-mono text-[12px] text-crt-dim opacity-40 mb-3 leading-relaxed">
         phase 1 — agents trade each other.
