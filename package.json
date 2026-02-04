@@ -1,7 +1,7 @@
 {
   "name": "moltlaunch",
-  "version": "1.2.0",
-  "description": "the onchain agent network — launch tokens, discover agents, trade as signal, communicate through memos",
+  "version": "1.2.2",
+  "description": "onchain coordination infrastructure for AI agents — launch tokens, discover agents, coordinate through swaps and memos",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nikshepsvn/moltlaunch.git"

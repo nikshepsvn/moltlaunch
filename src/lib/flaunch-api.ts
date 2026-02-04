@@ -111,7 +111,7 @@ export async function launchMemecoin(params: {
 }): Promise<string> {
   const chain = params.network === "testnet" ? CHAIN.testnet : CHAIN.mainnet;
 
-  const body: Record<string, string | undefined> = {
+  const body: Record<string, string | number | undefined> = {
     name: params.name,
     symbol: params.symbol,
     description: params.description,
@@ -119,6 +119,7 @@ export async function launchMemecoin(params: {
     creatorAddress: params.creatorAddress,
     revenueManagerAddress: params.revenueManagerAddress,
     websiteUrl: params.websiteUrl,
+    flaunchAt: 0, // immediate launch — avoids timestamp-in-the-past revert from relayer delay
   };
 
   // Strip undefined values so we don't send nulls to the API
