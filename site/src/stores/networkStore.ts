@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { NetworkAgent as Agent, SwapEvent, CrossHoldingEdge } from '@moltlaunch/shared';
+import type { NetworkAgent as Agent, SwapEvent, CrossHoldingEdge, NetworkGoal } from '@moltlaunch/shared';
 import { useTokenStore } from './tokenStore';
 import { formatEthUsd } from '../lib/formatters';
 
@@ -157,6 +157,13 @@ interface NetworkState {
   recentlyActiveNodes: Map<string, number>;
   deltaAnimations: Map<string, DeltaAnimation>;
 
+  // Network goal
+  goal: NetworkGoal | null;
+
+  // Mobile panel state
+  mobilePanelOpen: boolean;
+
+  setGoal: (goal: NetworkGoal | null) => void;
   setAgents: (agents: Agent[]) => void;
   setSwaps: (swaps: SwapEvent[]) => void;
   setCrossEdges: (edges: CrossHoldingEdge[]) => void;
@@ -166,6 +173,7 @@ interface NetworkState {
   setFilterActivity: (v: FilterActivity) => void;
   setSearchQuery: (q: string) => void;
   setSelectedAgent: (addr: string | null) => void;
+  setMobilePanelOpen: (open: boolean) => void;
   setRefreshing: (v: boolean) => void;
   setLastRefresh: (ts: number) => void;
   pushAnimations: (anims: SwapAnimation[]) => void;
@@ -190,7 +198,10 @@ export const useNetworkStore = create<NetworkState>((set, get) => ({
   animationQueue: [],
   recentlyActiveNodes: new Map(),
   deltaAnimations: new Map(),
+  goal: null,
+  mobilePanelOpen: false,
 
+  setGoal: (goal) => set({ goal }),
   setAgents: (agents) => {
     const prev = get().agents;
     const { deltas, feedEntries } = computeDeltas(prev, agents);
@@ -280,6 +291,7 @@ export const useNetworkStore = create<NetworkState>((set, get) => ({
   setFilterActivity: (filterActivity) => set({ filterActivity }),
   setSearchQuery: (searchQuery) => set({ searchQuery }),
   setSelectedAgent: (selectedAgent) => set({ selectedAgent }),
+  setMobilePanelOpen: (mobilePanelOpen) => set({ mobilePanelOpen }),
   setRefreshing: (refreshing) => set({ refreshing }),
   setLastRefresh: (lastRefresh) => set({ lastRefresh }),
 

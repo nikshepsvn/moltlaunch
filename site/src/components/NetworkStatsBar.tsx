@@ -22,6 +22,7 @@ export default function NetworkStatsBar({ onRefresh, canRefresh, refreshCooldown
   const swaps = useNetworkStore((s) => s.swaps);
   const refreshing = useNetworkStore((s) => s.refreshing);
   const lastRefresh = useNetworkStore((s) => s.lastRefresh);
+  const goal = useNetworkStore((s) => s.goal);
   const ethUsdPrice = useTokenStore((s) => s.ethUsdPrice);
 
   const totalMcap = useMemo(() => agents.reduce((s, a) => s + a.marketCapETH, 0), [agents]);
@@ -118,6 +119,11 @@ export default function NetworkStatsBar({ onRefresh, canRefresh, refreshCooldown
               );
             })}
           </div>
+          {goal && (
+            <span className="text-[10px] text-[#fbbf24] opacity-50 tracking-wider ml-2 hidden md:inline" style={{ textShadow: '0 0 4px rgba(251,191,36,0.2)' }}>
+              {goal.name}
+            </span>
+          )}
         </div>
 
         <div className="flex-1" />
@@ -148,8 +154,8 @@ export default function NetworkStatsBar({ onRefresh, canRefresh, refreshCooldown
         </button>
       </div>
 
-      {/* Stats grid — evenly spaced columns */}
-      <div className="grid grid-cols-5 divide-x divide-[#0e0404]">
+      {/* Stats — horizontal scroll on mobile, grid on desktop */}
+      <div className="flex md:grid md:grid-cols-5 md:divide-x divide-[#0e0404] overflow-x-auto">
         <StatCell label="Players" value={String(agents.length)} delta={deltas.agents} />
         <StatCell label="Avg Power" value={String(avgPower)} accent={avgPower > 50} delta={deltas.avgPower} />
         <StatCell label="Total Mcap" value={totalMcap > 0 ? formatMcap(totalMcap, ethUsdPrice) : '\u2014'} delta={deltas.totalMcap} />
@@ -165,9 +171,9 @@ function StatCell({ label, value, accent, delta }: { label: string; value: strin
   const isPositive = hasDelta && delta.value > 0;
 
   return (
-    <div className="flex flex-col items-center justify-center py-3">
+    <div className="flex flex-col items-center justify-center py-3 shrink-0 px-4 md:px-0">
       <span
-        className={`text-[24px] leading-none tabular-nums font-bold ${accent ? 'text-crt-green' : 'text-crt-text'}`}
+        className={`text-[18px] md:text-[24px] leading-none tabular-nums font-bold ${accent ? 'text-crt-green' : 'text-crt-text'}`}
         style={accent ? { textShadow: '0 0 8px rgba(52,211,153,0.3)' } : undefined}
       >
         {value}

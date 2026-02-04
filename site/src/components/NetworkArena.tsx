@@ -4,11 +4,13 @@ import SidePanel from './SidePanel';
 import SwapTicker from './SwapTicker';
 import { useNetworkGame } from '../hooks/useNetworkGame';
 import { useEthPrice } from '../hooks/useEthPrice';
+import { useNetworkStore } from '../stores/networkStore';
 
 /** Graph-first network view: always renders UI, agents populate progressively */
 export default function NetworkArena() {
   // Fetch ETH/USD price — populates tokenStore for all child components
   useEthPrice();
+  const setMobilePanelOpen = useNetworkStore((s) => s.setMobilePanelOpen);
   const { loadingState, loadProgress, error, agents, manualRefresh, canRefresh, refreshCooldown } = useNetworkGame();
 
   const isLoading = loadingState === 'loading';
@@ -94,6 +96,14 @@ export default function NetworkArena() {
         {/* Right sidebar — swaps between feed and agent detail */}
         <SidePanel />
       </div>
+
+      {/* Mobile: floating toggle for feed/detail */}
+      <button
+        onClick={() => setMobilePanelOpen(true)}
+        className="md:hidden fixed bottom-16 right-4 z-30 w-10 h-10 rounded-full bg-[#1a0808] border border-[#2a1212] flex items-center justify-center text-crt-dim"
+      >
+        ☰
+      </button>
 
       {/* Event log — bottom console bar */}
       <SwapTicker />

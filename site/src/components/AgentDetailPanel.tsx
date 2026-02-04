@@ -58,6 +58,7 @@ export default function AgentDetailPanel() {
   const crossEdges = useNetworkStore((s) => s.crossEdges);
   const agentDeltas = useNetworkStore((s) => s.agentDeltas);
   const setSelectedAgent = useNetworkStore((s) => s.setSelectedAgent);
+  const goal = useNetworkStore((s) => s.goal);
   const ethUsdPrice = useTokenStore((s) => s.ethUsdPrice);
 
   const agent = useMemo(
@@ -162,7 +163,7 @@ export default function AgentDetailPanel() {
           <div className="px-5 -mt-10 pb-3 relative z-10">
             <div className="flex gap-4 items-end">
               <div className="relative shrink-0">
-                <div className="w-[80px] h-[80px] rounded-full border-2 border-[#2a1212] overflow-hidden bg-[#0a0303]">
+                <div className="w-[64px] h-[64px] md:w-[80px] md:h-[80px] rounded-full border-2 border-[#2a1212] overflow-hidden bg-[#0a0303]">
                   {agent.image ? (
                     <img src={agent.image} alt="" className="w-full h-full" style={{ imageRendering: 'pixelated' }} />
                   ) : (
@@ -177,7 +178,7 @@ export default function AgentDetailPanel() {
                 </div>
               </div>
               <div className="flex-1 min-w-0 pb-1">
-                <div className="text-[24px] font-black text-white leading-tight truncate">{agent.name}</div>
+                <div className="text-[20px] md:text-[24px] font-black text-white leading-tight truncate">{agent.name}</div>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-[14px] text-[#888]">${agent.symbol}</span>
                   {agent.type === 'agent' && <span className="text-[10px] text-[#38bdf8] px-1.5 py-0.5 border border-[#38bdf830] uppercase tracking-wider rounded-sm">bot</span>}
@@ -197,7 +198,7 @@ export default function AgentDetailPanel() {
           <div className="px-5 pt-5 pb-3">
             <div className="flex gap-4">
               <div className="relative shrink-0">
-                <div className="w-[88px] h-[88px] rounded-full border-2 border-[#2a1212] overflow-hidden bg-[#0a0303]">
+                <div className="w-[64px] h-[64px] md:w-[88px] md:h-[88px] rounded-full border-2 border-[#2a1212] overflow-hidden bg-[#0a0303]">
                   {agent.image ? (
                     <img src={agent.image} alt="" className="w-full h-full" style={{ imageRendering: 'pixelated' }} />
                   ) : (
@@ -212,7 +213,7 @@ export default function AgentDetailPanel() {
                 </div>
               </div>
               <div className="flex-1 min-w-0 pt-0.5">
-                <div className="text-[24px] font-black text-white leading-tight truncate">{agent.name}</div>
+                <div className="text-[20px] md:text-[24px] font-black text-white leading-tight truncate">{agent.name}</div>
                 <div className="flex items-center gap-2 mt-1.5">
                   <span className="text-[14px] text-[#888]">${agent.symbol}</span>
                   {agent.type === 'agent' && <span className="text-[10px] text-[#38bdf8] px-1.5 py-0.5 border border-[#38bdf830] uppercase tracking-wider rounded-sm">bot</span>}
@@ -237,10 +238,15 @@ export default function AgentDetailPanel() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-[52px] font-black leading-none" style={{ color: scoreColor }}>{score}</span>
+            <span className="text-[36px] md:text-[52px] font-black leading-none" style={{ color: scoreColor }}>{score}</span>
             {delta && !delta.isNew && delta.scoreDelta !== 0 && (
               <span className="text-[14px] font-bold" style={{ color: delta.scoreDelta > 0 ? '#34d399' : '#ff4444' }}>
                 {delta.scoreDelta > 0 ? '+' : ''}{delta.scoreDelta}
+              </span>
+            )}
+            {goal && agent.goalScore > 0 && (
+              <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-sm ml-1" style={{ color: '#fbbf24', backgroundColor: '#fbbf2415', border: '1px solid #fbbf2430' }}>
+                goal {agent.goalScore}
               </span>
             )}
           </div>
@@ -275,6 +281,7 @@ export default function AgentDetailPanel() {
         <Stat label="Cross" value={String(agent.crossTradeCount)} valueColor={agent.crossTradeCount > 0 ? '#a78bfa' : undefined} />
         <Stat label="Holdings" value={String(agent.crossHoldings)} valueColor={agent.crossHoldings > 0 ? '#a78bfa' : undefined} />
         <Stat label="Memos" value={String(agent.memoCount)} valueColor={agent.memoCount > 0 ? '#38bdf8' : undefined} />
+        {goal && <Stat label="Onboards" value={String(agent.onboards.length)} valueColor={agent.onboards.length > 0 ? '#fbbf24' : undefined} />}
       </div>
 
       {/* ── CONNECTIONS ── */}
