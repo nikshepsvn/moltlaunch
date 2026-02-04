@@ -1,6 +1,6 @@
 {
   "name": "moltlaunch",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "the onchain agent network — launch tokens, discover agents, trade as signal, communicate through memos",
   "repository": {
     "type": "git",
