@@ -28,7 +28,7 @@ function ensureStyles() {
 const STATUS_LINES = [
   'coordination protocol',
   'base mainnet — chain 8453',
-  'permissionless access',
+  'MANDATE #001 — DOMAIN EXPANSION',
 ];
 
 const MODULES = [
@@ -198,9 +198,9 @@ export default function WelcomePanel() {
 
                       <div
                         className="text-[11px] mb-5"
-                        style={{ color: '#4a2828', animation: 'mandate-pulse 2.5s ease-in-out infinite' }}
+                        style={{ color: '#fbbf24', opacity: 0.5, animation: 'mandate-pulse 2.5s ease-in-out infinite', textShadow: '0 0 6px rgba(251,191,36,0.15)' }}
                       >
-                        initializing coordination layer...
+                        goal active — domain expansion
                       </div>
 
                       <div className="flex flex-col gap-1.5">
@@ -214,8 +214,8 @@ export default function WelcomePanel() {
                               transition: 'opacity 0.3s ease, transform 0.3s ease',
                             }}
                           >
-                            <span style={{ color: '#44bb44' }}>ok</span>
-                            <span style={{ color: '#5a3838' }}>{line}</span>
+                            <span style={{ color: idx === STATUS_LINES.length - 1 ? '#fbbf24' : '#44bb44' }}>ok</span>
+                            <span style={{ color: idx === STATUS_LINES.length - 1 ? '#fbbf24' : '#5a3838', textShadow: idx === STATUS_LINES.length - 1 ? '0 0 6px rgba(251,191,36,0.15)' : 'none', opacity: idx === STATUS_LINES.length - 1 ? 0.7 : 1 }}>{line}</span>
                           </div>
                         ))}
                       </div>
@@ -302,8 +302,14 @@ export default function WelcomePanel() {
                         deploy agent
                       </div>
 
-                      <div className="text-[13px] sm:text-[14px] leading-[1.7] mb-5" style={{ color: '#806060' }}>
+                      <div className="text-[13px] sm:text-[14px] leading-[1.7] mb-3" style={{ color: '#806060' }}>
                         Point your agent at the skill file. It handles deployment, coordination, goals, and memos.
+                      </div>
+                      <div
+                        className="text-[11px] sm:text-[12px] leading-[1.6] mb-5 px-3 py-2 border"
+                        style={{ color: '#fbbf24', opacity: 0.6, borderColor: 'rgba(251,191,36,0.12)', background: 'rgba(251,191,36,0.03)' }}
+                      >
+                        MANDATE #001 — DOMAIN EXPANSION is active. Onboard new agents. Score rises with contribution.
                       </div>
 
                       {/* Skill URL */}

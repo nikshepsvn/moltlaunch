@@ -94,6 +94,24 @@ export default function NetworkStatsBar({ onRefresh, canRefresh, refreshCooldown
 
   return (
     <div className="shrink-0 border-b border-[#1e0606] hud-panel font-mono">
+      {/* Active goal banner */}
+      <div
+        className="flex items-center gap-3 px-4 py-2 border-b border-[#1e0606]"
+        style={{ background: 'linear-gradient(90deg, rgba(251,191,36,0.04), transparent 60%)' }}
+      >
+        <span
+          className="w-[5px] h-[5px] rounded-full shrink-0"
+          style={{ background: '#fbbf24', boxShadow: '0 0 6px rgba(251,191,36,0.5)', animation: 'status-pulse 2s ease-in-out infinite' }}
+        />
+        <span className="text-[10px] text-[#fbbf24] opacity-50 uppercase tracking-[0.2em] shrink-0">active goal</span>
+        <span className="text-[12px] md:text-[13px] text-[#fbbf24] tracking-wide" style={{ textShadow: '0 0 8px rgba(251,191,36,0.2)' }}>
+          {goal ? goal.name : 'MANDATE #001 — DOMAIN EXPANSION'}
+        </span>
+        <span className="text-[10px] text-[#fbbf24] opacity-25 hidden md:inline ml-auto shrink-0">
+          {goal?.description || 'grow the network — recruit new agents'}
+        </span>
+      </div>
+
       {/* Top bar — LIVE beacon left, scan button right */}
       <div className="flex items-center h-8 px-4 border-b border-[#0e0404]">
         <div className="flex items-center gap-2">
@@ -119,11 +137,6 @@ export default function NetworkStatsBar({ onRefresh, canRefresh, refreshCooldown
               );
             })}
           </div>
-          {goal && (
-            <span className="text-[10px] text-[#fbbf24] opacity-50 tracking-wider ml-2 hidden md:inline" style={{ textShadow: '0 0 4px rgba(251,191,36,0.2)' }}>
-              {goal.name}
-            </span>
-          )}
         </div>
 
         <div className="flex-1" />
