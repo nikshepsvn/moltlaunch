@@ -135,11 +135,17 @@ interface WalletTx {
   value: number;
   timestamp: string;
   memo: string | null;
+  /** The ERC-20 token address received in this tx (if detected) */
+  receivedToken: string | null;
 }
 
 /**
  * Fetch recent outgoing txs for a wallet via Alchemy getAssetTransfers,
  * then decode memos from the tx calldata.
+ *
+ * Also fetches incoming ERC-20 transfers to determine which token was
+ * actually received in each swap (fixes misattribution of wallet-level
+ * swaps to the agent's own token).
  */
 export async function fetchWalletSwaps(
   env: Env,
@@ -147,36 +153,67 @@ export async function fetchWalletSwaps(
   maxResults = 10,
 ): Promise<WalletTx[]> {
   try {
-    const res = await fetch(env.ALCHEMY_RPC, {
+    // Batch: outgoing ETH transfers + incoming ERC-20 transfers
+    const batchRes = await fetch(env.ALCHEMY_RPC, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'alchemy_getAssetTransfers',
-        params: [{
-          fromAddress: wallet,
-          category: ['external'],
-          order: 'desc',
-          maxCount: `0x${maxResults.toString(16)}`,
-          withMetadata: true,
-        }],
-      }),
+      body: JSON.stringify([
+        {
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'alchemy_getAssetTransfers',
+          params: [{
+            fromAddress: wallet,
+            category: ['external'],
+            order: 'desc',
+            maxCount: `0x${maxResults.toString(16)}`,
+            withMetadata: true,
+          }],
+        },
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'alchemy_getAssetTransfers',
+          params: [{
+            toAddress: wallet,
+            category: ['erc20'],
+            order: 'desc',
+            maxCount: `0x${(maxResults * 3).toString(16)}`,
+            withMetadata: true,
+          }],
+        },
+      ]),
     });
-    const json = await res.json() as Record<string, unknown>;
-    const result = json.result as { transfers: Array<Record<string, unknown>> } | undefined;
-    const transfers = result?.transfers ?? [];
+    const batchJson = await batchRes.json() as Array<Record<string, unknown>>;
+
+    // Parse outgoing ETH transfers
+    const ethResult = (batchJson.find((r) => r.id === 1) ?? {}) as Record<string, unknown>;
+    const ethTransfers = ((ethResult.result as { transfers: Array<Record<string, unknown>> })?.transfers) ?? [];
+
+    // Parse incoming ERC-20 transfers — build a map of txHash → token address
+    const erc20Result = (batchJson.find((r) => r.id === 2) ?? {}) as Record<string, unknown>;
+    const erc20Transfers = ((erc20Result.result as { transfers: Array<Record<string, unknown>> })?.transfers) ?? [];
+
+    const tokenByHash = new Map<string, string>();
+    for (const t of erc20Transfers) {
+      const hash = (t.hash as string)?.toLowerCase();
+      const rawContract = t.rawContract as { address?: string } | undefined;
+      if (hash && rawContract?.address) {
+        tokenByHash.set(hash, rawContract.address.toLowerCase());
+      }
+    }
 
     // Fetch tx input data for each to decode memos (batch)
     const txs: WalletTx[] = [];
     await Promise.allSettled(
-      transfers.map(async (t) => {
+      ethTransfers.map(async (t) => {
         const hash = t.hash as string;
         const to = t.to as string;
         const value = (t.value as number) ?? 0;
         const metadata = t.metadata as { blockTimestamp: string };
         const memo = await fetchMemo(env, hash);
-        txs.push({ hash, to, value, timestamp: metadata.blockTimestamp, memo });
+        const receivedToken = tokenByHash.get(hash.toLowerCase()) ?? null;
+        txs.push({ hash, to, value, timestamp: metadata.blockTimestamp, memo, receivedToken });
       }),
     );
 

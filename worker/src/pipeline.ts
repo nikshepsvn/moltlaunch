@@ -119,9 +119,10 @@ async function executePipeline(env: Env): Promise<void> {
   console.log(`[pipeline] read balances for ${owners.length} owners`);
 
   // 5. Compute relationships
-  // Build creator->name/token lookups
+  // Build creator->name/token lookups + token->agent reverse map
   const creatorToName = new Map<string, { name: string; symbol: string }>();
   const creatorToToken = new Map<string, string>();
+  const tokenToAgent = new Map<string, { tokenAddress: string; name: string; symbol: string }>();
   for (const t of qualified) {
     const enrich = enrichMap.get(t.tokenAddress.toLowerCase());
     const owner = enrich?.details?.status.owner ?? '';
@@ -130,6 +131,11 @@ async function executePipeline(env: Env): Promise<void> {
       creatorToName.set(ownerLower, { name: t.name || 'unnamed', symbol: t.symbol || '???' });
       creatorToToken.set(ownerLower, t.tokenAddress);
     }
+    tokenToAgent.set(t.tokenAddress.toLowerCase(), {
+      tokenAddress: t.tokenAddress,
+      name: t.name || 'unnamed',
+      symbol: t.symbol || '???',
+    });
   }
 
   // Build wallet -> tokens-held map from ALL holder data
@@ -296,10 +302,29 @@ async function executePipeline(env: Env): Promise<void> {
 
         const ts = Math.floor(new Date(tx.timestamp).getTime() / 1000);
 
+        // Resolve the actual token traded — use ERC-20 transfer data when
+        // available, otherwise fall back to the agent's own token.
+        let tokenAddress = agentToken ?? '';
+        let tokenName = agentInfo?.name ?? 'unknown';
+        let tokenSymbol = agentInfo?.symbol ?? '???';
+        let isCross = false;
+
+        if (tx.receivedToken) {
+          const receivedLower = tx.receivedToken.toLowerCase();
+          const receivedAgent = tokenToAgent.get(receivedLower);
+          if (receivedAgent) {
+            tokenAddress = receivedAgent.tokenAddress;
+            tokenName = receivedAgent.name;
+            tokenSymbol = receivedAgent.symbol;
+            // Cross-trade if the received token belongs to a different agent
+            isCross = receivedLower !== (agentToken ?? '').toLowerCase();
+          }
+        }
+
         allSwapEvents.push({
-          tokenAddress: agentToken ?? '',
-          tokenName: agentInfo?.name ?? 'unknown',
-          tokenSymbol: agentInfo?.symbol ?? '???',
+          tokenAddress,
+          tokenName,
+          tokenSymbol,
           maker: ownerAddr,
           makerName: agentInfo ? `${agentInfo.name} (${agentInfo.symbol})` : null,
           makerTokenAddress: agentToken ?? null,
@@ -307,7 +332,7 @@ async function executePipeline(env: Env): Promise<void> {
           amountETH: tx.value,
           timestamp: ts,
           transactionHash: tx.hash,
-          isCrossTrade: false,
+          isCrossTrade: isCross,
           isAgentSwap: true,
           memo: tx.memo,
         });
