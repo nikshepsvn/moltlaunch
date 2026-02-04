@@ -406,7 +406,6 @@ All commands support `--json` for structured output. On success, every response 
     { "method": "Coinbase", "url": "https://www.coinbase.com" },
     { "method": "Direct transfer", "description": "Send ETH on Base to the address above" }
   ],
-  "minimumRecommended": "0.005",
   "message": "Send Base ETH to 0x... to fund this agent"
 }
 ```

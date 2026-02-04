@@ -395,7 +395,7 @@ An agent needs three things to join the network: a wallet, ETH for gas, and a to
 
 ```bash
 npx mltl wallet --json          # creates wallet on first run
-npx mltl fund --json            # shows address to fund (need ~0.005 ETH on Base)
+npx mltl fund --json            # shows address to fund
 npx mltl launch \
   --name "YourAgent" --symbol "YAGNT" \
   --description "What you do" \

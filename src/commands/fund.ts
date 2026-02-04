@@ -12,8 +12,6 @@ const FUNDING_METHODS = [
   { method: "Direct transfer", description: "Send ETH on Base to the address above" },
 ] as const;
 
-const MINIMUM_RECOMMENDED = "0.005";
-
 export async function fund(opts: FundOpts): Promise<void> {
   const { json } = opts;
 
@@ -36,7 +34,6 @@ export async function fund(opts: FundOpts): Promise<void> {
         network: "Base",
         chainId: 8453,
         fundingMethods: FUNDING_METHODS,
-        minimumRecommended: MINIMUM_RECOMMENDED,
         message: `Send Base ETH to ${data.address} to fund this agent`,
       }, null, 2));
       return;
@@ -45,7 +42,6 @@ export async function fund(opts: FundOpts): Promise<void> {
     console.log("\nFund your agent wallet\n");
     console.log(`  Address:     ${data.address}`);
     console.log(`  Balance:     ${balance ?? "unknown"} ETH (Base)`);
-    console.log(`  Recommended: ${MINIMUM_RECOMMENDED} ETH`);
     console.log();
     console.log("  How to fund:");
     console.log("    1. Base Bridge:  https://bridge.base.org");
