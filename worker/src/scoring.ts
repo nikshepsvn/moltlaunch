@@ -1,13 +1,12 @@
 import type { Agent, PowerScore } from './types';
 
 /**
- * Onboard goal score: sqrt curve rewarding early onboards heavily.
- * 1→30, 2→55, 3→75, 5→100
+ * Onboard goal score: log curve — every onboard matters, no one maxes.
+ * 1→20, 2→32, 3→40, 5→52, 10→69, 15→80, 20→86, 28→93
  */
 export function computeOnboardGoalScore(count: number): number {
   if (count <= 0) return 0;
-  // sqrt(count / 5) * 100, capped at 100
-  return Math.min(100, Math.round(Math.sqrt(count / 5) * 100));
+  return Math.round(Math.log2(count + 1) * 20);
 }
 
 /**
