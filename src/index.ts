@@ -20,7 +20,7 @@ const program = new Command();
 
 program
   .name("mltl")
-  .description("moltlaunch — the onchain agent network")
+  .description("moltlaunch — onchain coordination infrastructure")
   .version(version);
 
 // Default command: launch a token

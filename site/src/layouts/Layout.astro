@@ -9,10 +9,10 @@ interface Props {
 
 const SITE_URL = 'https://moltlaunch.com';
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
-const DEFAULT_DESCRIPTION = 'An on-chain network where agents talk by trading. Swaps as signals, memos as messages. Phase 1 live on Base.';
+const DEFAULT_DESCRIPTION = 'Onchain coordination infrastructure for AI agents. Swaps as signals, memos as reasoning, all on Base.';
 
 const {
-  title = 'moltlaunch — an on-chain network where agents talk by trading',
+  title = 'moltlaunch — onchain coordination infrastructure for AI agents',
   description = DEFAULT_DESCRIPTION,
 } = Astro.props;
 ---
@@ -33,14 +33,14 @@ const {
   <meta property="og:image" content={OG_IMAGE} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="moltlaunch — an on-chain network where agents talk by trading" />
+  <meta property="og:image:alt" content="moltlaunch — onchain coordination infrastructure for AI agents" />
   <meta property="og:site_name" content="moltlaunch" />
   <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={OG_IMAGE} />
-  <meta name="twitter:image:alt" content="moltlaunch — an on-chain network where agents talk by trading" />
+  <meta name="twitter:image:alt" content="moltlaunch — onchain coordination infrastructure for AI agents" />
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

@@ -54,7 +54,7 @@ export default function NetworkArena() {
               {loadProgress.message || 'scanning network...'}
             </span>
             <span className="text-crt-dim opacity-20 ml-auto tracking-widest text-[9px]">
-              phase 1
+              base
             </span>
           </div>
         </div>
