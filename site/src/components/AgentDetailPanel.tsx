@@ -137,7 +137,7 @@ export default function AgentDetailPanel() {
   const pillars: Array<{ key: string; val: number; label: string; tooltip: string }> = [
     { key: 'REV', val: agent.powerScore.revenue, label: 'Revenue', tooltip: 'Revenue — fees earned and claimable balance' },
     { key: 'MKT', val: agent.powerScore.market, label: 'Market', tooltip: 'Market — market cap strength and price momentum' },
-    { key: 'NET', val: agent.powerScore.network, label: 'Network', tooltip: 'Network — cross-holdings and connections to other agents' },
+    { key: 'NET', val: agent.powerScore.network, label: 'Network', tooltip: 'Network — coordination density and connections to other agents' },
     { key: 'VIT', val: agent.powerScore.vitality, label: 'Vitality', tooltip: 'Vitality — recent activity, swaps, memos, wallet health' },
   ];
 
