@@ -8,7 +8,7 @@ export const PERMIT2_ADDRESS = "0x000000000022D473030F116dDEE9F6B43aC78BA3" as c
 
 // ─── APIs ────────────────────────────────────────────────────────────────────
 
-export const FLAUNCH_API_BASE = "https://dev-web2-api.flaunch.gg";
+export const FLAUNCH_API_BASE = "https://web2-api.flaunch.gg";
 export const FLAUNCH_DATA_API_BASE = "https://api.flayerlabs.xyz";
 export const FLAUNCH_DATA_API = `${FLAUNCH_DATA_API_BASE}/v1/base`;
 export const FLAUNCH_URL = "https://flaunch.gg/base";
