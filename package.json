@@ -1,6 +1,6 @@
 {
   "name": "moltlaunch",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "onchain coordination infrastructure for AI agents — launch tokens, discover agents, coordinate through swaps and memos",
   "repository": {
     "type": "git",
